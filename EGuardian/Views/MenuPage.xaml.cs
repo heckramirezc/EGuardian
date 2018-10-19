@@ -18,8 +18,8 @@ namespace EGuardian.Views
 
             menuItems = new List<HomeMenuItem>
             {
-                new HomeMenuItem {Id = MenuItemType.Browse, Title="Browse" },
-                new HomeMenuItem {Id = MenuItemType.About, Title="About" }
+                new HomeMenuItem {Id = MenuItemType.Inicio, Title="Inicio" },
+                new HomeMenuItem {Id = MenuItemType.Salir, Title="Salir" }
             };
 
             ListViewMenu.ItemsSource = menuItems;

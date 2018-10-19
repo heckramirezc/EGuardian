@@ -6,8 +6,8 @@ namespace EGuardian.Models
 {
     public enum MenuItemType
     {
-        Browse,
-        About
+        Inicio,
+        Salir
     }
     public class HomeMenuItem
     {
