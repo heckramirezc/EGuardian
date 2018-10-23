@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using CarouselView.FormsPlugin.iOS;
 using Foundation;
+using Plugin.Toasts;
 using UIKit;
+using Xamarin.Forms;
 
 namespace EGuardian.iOS
 {
@@ -24,6 +26,9 @@ namespace EGuardian.iOS
         {
             Xamarin.Calabash.Start();
             global::Xamarin.Forms.Forms.Init();
+            DependencyService.Register<ToastNotificatorImplementation>();
+            ToastNotificatorImplementation.Init();
+            CarouselViewRenderer.Init();
             LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);

@@ -7,12 +7,12 @@ using Xamarin.Forms;
 
 using EGuardian.Models;
 using EGuardian.Services;
+using EGuardian.Interfaces;
 
 namespace EGuardian.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
-    {
-        public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>() ?? new MockDataStore();
+    {     
 
         bool isBusy = false;
         public bool IsBusy
