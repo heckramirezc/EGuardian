@@ -17,6 +17,7 @@ namespace EGuardian.ViewModels.Menu
             Menus.Add(new MenuItem
             {
                 Title = Strings.Menu1,
+                Icon = "iEventos.png",
                 Id = MenuItemType.Eventos,
                 SeparatorVisibility = true
                 //MenuTipoSiguiente = MenuItemType.Incidencias
@@ -24,6 +25,7 @@ namespace EGuardian.ViewModels.Menu
             Menus.Add(new MenuItem
             {
                 Title = Strings.Menu2,
+                Icon = "iIncidencias.png",
                 Id = MenuItemType.Incidencias,
                 SeparatorVisibility = true
                 //MenuTipoSiguiente = MenuItemType.Perfil
@@ -31,6 +33,7 @@ namespace EGuardian.ViewModels.Menu
             Menus.Add(new MenuItem
             {
                 Title = Strings.Menu3,
+                Icon = "iPerfil.png",
                 SeparatorVisibility = true,
                 Id = MenuItemType.Perfil,
                 //MenuTipoSiguiente = MenuItemType.Reportes
@@ -38,20 +41,31 @@ namespace EGuardian.ViewModels.Menu
             Menus.Add(new MenuItem
             {
                 Title = Strings.Menu4,
-				SeparatorVisibility = true,
+                Icon = "iReportes.png",
+                SeparatorVisibility = true,
                 Id = MenuItemType.Reportes,
                 //MenuTipoSiguiente = MenuItemType.API
             });
             Menus.Add(new MenuItem
             {
                 Title = Strings.Menu5,
+                Icon = "iAPI.png",
                 SeparatorVisibility = true,
                 Id = MenuItemType.API,
-                //MenuTipoSiguiente = MenuItemType.Salir
+                //MenuTipoSiguiente = MenuItemType.Ajustes
             });
             Menus.Add(new MenuItem
             {
                 Title = Strings.Menu6,
+                Icon = "iConfiguracion.png",
+                SeparatorVisibility = true,
+                Id = MenuItemType.Ajustes,
+                //MenuTipoSiguiente = MenuItemType.Salir
+            });
+            Menus.Add(new MenuItem
+            {
+                Title = Strings.Menu7,
+                Icon = "iSalir.png",
                 SeparatorVisibility = false,
                 Id = MenuItemType.Salir
             });

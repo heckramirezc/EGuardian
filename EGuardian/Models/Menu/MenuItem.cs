@@ -8,7 +8,6 @@ namespace EGuardian.Models.Menu
 {
     public enum MenuItemType
     {
-        Inicio,
         Eventos,
         Incidencias,
         Perfil,
@@ -21,6 +20,7 @@ namespace EGuardian.Models.Menu
     {
         public MenuItemType Id { get; set; }
         public string Title { get; set; }
+        public string Icon { get; set; }
         public bool isSelected { get; set; }
         public Color TextColor
         {

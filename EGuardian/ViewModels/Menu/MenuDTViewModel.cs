@@ -10,39 +10,41 @@ namespace EGuardian.ViewModels.Menu
     {
         public MenuDTViewModel()
         {
+            IconView iconMenu = new IconView
+            {
+                //WidthRequest = 25,
+                HeightRequest = 26,
+                HorizontalOptions = LayoutOptions.Center,
+                Foreground = Color.FromHex("19164B")
+            };
+            iconMenu.SetBinding(IconView.SourceProperty, BaseViewModel.IconPropertyName);
 
             Label tituloMenu = new Label
             {
-                HorizontalTextAlignment = TextAlignment.Center,
-                Margin = 0,
-                FontSize = (App.DisplayScreenWidth / 25.066666666666667),
+                TextColor = Color.FromHex("19164B"),
+                FontSize = 16,
                 VerticalTextAlignment = TextAlignment.Center,
+                FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null)
             };
-            tituloMenu.SetBinding(Label.TextProperty, "Title");
-            tituloMenu.SetBinding(Label.TextColorProperty, "TextColor");
-            tituloMenu.SetBinding(Label.FontFamilyProperty, "FontFamily");
-
-
-            BoxView Separator = new BoxView { VerticalOptions = LayoutOptions.FillAndExpand, BackgroundColor = Color.FromHex("BFBFBF"), HeightRequest = (App.DisplayScreenWidth / 341.818181818181818), Opacity = 0.25 };
-            Separator.SetBinding(VisualElement.IsVisibleProperty, "SeparatorVisibility");
+            tituloMenu.SetBinding(Label.TextProperty, BaseViewModel.TitlePropertyName);
 
             Grid Menu = new Grid
             {
-                Padding = new Thickness((App.DisplayScreenWidth / 9.4), 0),
-                RowSpacing = 0,
-                HeightRequest = Convert.ToInt32((App.DisplayScreenHeight / 13.533333333333333)),
+                Padding = new Thickness(5, 10),
+                ColumnSpacing = 0,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.Center,
                 RowDefinitions = {
-                    new RowDefinition { Height = new GridLength (1, GridUnitType.Star) },
-                    new RowDefinition { Height = new GridLength ((App.DisplayScreenHeight / 341.818181818181818), GridUnitType.Absolute) }
+                    new RowDefinition { Height = new GridLength (0, GridUnitType.Auto) }
                 },
                 ColumnDefinitions = {
+                    new ColumnDefinition { Width = new GridLength (60, GridUnitType.Absolute) },
                     new ColumnDefinition { Width = new GridLength (1, GridUnitType.Star) }
                 }
             };
-            Menu.Children.Add(tituloMenu, 0, 0);
-            Menu.Children.Add(Separator, 0, 1);
+
+            Menu.Children.Add(iconMenu, 0, 0);
+            Menu.Children.Add(tituloMenu, 1, 0);
             View = Menu;
             SelectedBackgroundColor = Color.Transparent;
         }

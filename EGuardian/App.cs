@@ -1,5 +1,8 @@
-﻿using EGuardian.Data;
+﻿using System;
+using System.Linq;
+using EGuardian.Data;
 using EGuardian.Helpers;
+using EGuardian.Models.Eventos;
 using EGuardian.Services;
 using EGuardian.Views.Acceso;
 using EGuardian.Views.Menu;
@@ -32,23 +35,45 @@ namespace EGuardian
 
         public App()
         {
-            MessagingCenter.Subscribe<Views.Menu.Menu>(this, "logout", (sender) =>
+            MessagingCenter.Subscribe<Views.Menu.MainPage>(this, "noAutenticado", (sender) =>
             {
                 MainPage = new LoginPage();
             });
-            MessagingCenter.Subscribe<LoginPage>(this, "Login", (sender) =>
+            MessagingCenter.Subscribe<LoginPage>(this, "Autenticado", (sender) =>
             {
                 MainPage = new MainPage();
                 Settings.session_Session_Token = "1";
                 Settings.session_idUsuario = "1";
-            });            
+            });
+
+            MessagingCenter.Subscribe<Registro>(this, "Autenticado", (sender) =>
+            {
+                MainPage = new MainPage();
+                Settings.session_Session_Token = "1";
+                Settings.session_idUsuario = "1";
+            });
+
+            if(App.Database.GetEventos().ToList().Count==0)
+            {
+                for (int i = 0; i < 3;i++)
+                {
+                    string Asunto = "CAPACITACIÓN" + i;
+                    App.Database.InsertEvento(
+                       new eventos
+                       {
+                        asunto= Asunto,
+                        fechaInicio=DateTime.Now.AddHours(-8+i).ToString(),
+                        fechaFin = DateTime.Now.AddHours(-8 + i).AddMinutes(30+i).ToString()
+                       });
+                }
+            }
+
 
             ManejadorDatos = new ManejadorDatos(new DataStore());
-
             if (!string.IsNullOrEmpty(Settings.session_Session_Token))
                 MainPage = new MainPage();
             else
-                MainPage = new TutorialPage(); //MainPage = new Login();
+                MainPage = new TutorialPage();
         }
 
         protected override void OnStart()

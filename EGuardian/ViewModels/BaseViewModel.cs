@@ -12,8 +12,8 @@ using EGuardian.Interfaces;
 namespace EGuardian.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
-    {     
-
+    {
+        public bool IsInitialized { get; set; }
         bool isBusy = false;
         public bool IsBusy
         {
@@ -22,10 +22,33 @@ namespace EGuardian.ViewModels
         }
 
         string title = string.Empty;
+        public const string TitlePropertyName = "Title";
         public string Title
         {
             get { return title; }
             set { SetProperty(ref title, value); }
+        }
+
+        private string subTitle = string.Empty;
+        /// <summary>
+        /// Gets or sets the "Subtitle" property
+        /// </summary>
+        public const string SubtitlePropertyName = "Subtitle";
+        public string Subtitle
+        {
+            get { return subTitle; }
+            set { SetProperty(ref subTitle, value, SubtitlePropertyName); }
+        }
+
+        private string icon = null;
+        /// <summary>
+        /// Gets or sets the "Icon" of the viewmodel
+        /// </summary>
+        public const string IconPropertyName = "Icon";
+        public string Icon
+        {
+            get { return icon; }
+            set { SetProperty(ref icon, value, IconPropertyName); }
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value,

@@ -1,4 +1,5 @@
-﻿using EGuardian.Controls;
+﻿using EGuardian.Common.Resources;
+using EGuardian.Controls;
 using Plugin.Toasts;
 using Rg.Plugins.Popup.Extensions;
 using Rg.Plugins.Popup.Pages;
@@ -14,7 +15,7 @@ namespace EGuardian.Views.Acceso
 {
     public class Forget : PopupPage
     {
-        String PwdReset_ID;
+        String PwdReset_ID="1850";
         public ExtendedEntry Usuario, contrasenia;
         ExtendedEntry codigo, confirmacionContrasenia;
         Button recuperar, continuar, cambiar;
@@ -104,7 +105,7 @@ namespace EGuardian.Views.Acceso
                 if (contrasenia.IsPassword)
                 {
                     contrasenia.IsPassword = false;
-                    contraseniaView.Foreground = Color.FromHex("007D8C");
+                    contraseniaView.Foreground = Color.FromHex("312851");
 
                 }
                 else
@@ -119,7 +120,7 @@ namespace EGuardian.Views.Acceso
                 if (confirmacionContrasenia.IsPassword)
                 {
                     confirmacionContrasenia.IsPassword = false;
-                    contraseniaConfirmacionView.Foreground = Color.FromHex("007D8C");
+                    contraseniaConfirmacionView.Foreground = Color.FromHex("312851");
                 }
                 else
                 {
@@ -140,7 +141,7 @@ namespace EGuardian.Views.Acceso
                 FontAttributes = FontAttributes.Bold,
                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
                 VerticalOptions = LayoutOptions.Start,
-                BackgroundColor = Color.FromHex("53A946"),
+                BackgroundColor = Color.FromHex("F7B819"),
                 WidthRequest = 128,
                 HeightRequest = 38,
             };
@@ -156,7 +157,7 @@ namespace EGuardian.Views.Acceso
                 FontAttributes = FontAttributes.Bold,
                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
                 VerticalOptions = LayoutOptions.Start,
-                BackgroundColor = Color.FromHex("53A946"),
+                BackgroundColor = Color.FromHex("F7B819"),
                 WidthRequest = 128,
                 HeightRequest = 38,
             };
@@ -170,13 +171,13 @@ namespace EGuardian.Views.Acceso
                 FontAttributes = FontAttributes.Bold,
                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
                 VerticalOptions = LayoutOptions.Start,
-                BackgroundColor = Color.FromHex("53A946"),
+                BackgroundColor = Color.FromHex("F7B819"),
                 WidthRequest = 138,
                 HeightRequest = 38,
             };
             cambiar.Clicked += Cambiar_Clicked;
 
-           /* gridBotonRecuperar = new RelativeLayout
+            gridBotonRecuperar = new RelativeLayout
             {
                 WidthRequest = 130,
                 HeightRequest = 42,
@@ -226,14 +227,14 @@ namespace EGuardian.Views.Acceso
                 HeightRequest = 40,
                 WidthRequest = 138,
             }, Constraint.Constant(2), Constraint.Constant(2));
-            gridBoton.Children.Add(cambiar, Constraint.Constant(0), Constraint.Constant(0));*/
+            gridBoton.Children.Add(cambiar, Constraint.Constant(0), Constraint.Constant(0));
 
 
-            /* IconView cerrar = new IconView
+             IconView cerrar = new IconView
              {
                  //Margin = new Thickness(0, 0, 10, 0),
                  HorizontalOptions = LayoutOptions.End,
-                 Source = EstilosCita.Iconos.Cancelar,
+                 Source = Images.Cancelar,
                  Foreground = Color.FromHex("a2b3bb"),
                  WidthRequest = 20,
                  HeightRequest = 20
@@ -245,7 +246,7 @@ namespace EGuardian.Views.Acceso
                  if (accion)
                      await Navigation.PopPopupAsync();
              };
-             cerrar.GestureRecognizers.Add(cerrarTAP);*/
+             cerrar.GestureRecognizers.Add(cerrarTAP);
 
 
             var indicador = new ActivityIndicator
@@ -270,7 +271,7 @@ namespace EGuardian.Views.Acceso
                     {
                         Text = "Ingresa\r\ntu correo electrónico",
                         HorizontalTextAlignment = TextAlignment.Center,
-                        TextColor = Color.FromHex("007D8C"),
+						TextColor = Color.FromHex("373152"),
                         FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
                         FontSize = 18,
                         VerticalOptions = LayoutOptions.Center
@@ -284,7 +285,7 @@ namespace EGuardian.Views.Acceso
                             {
                                 Text ="CORREO ELECTRÓNICO: *",
                                 FontSize = 13,
-                                TextColor = Color.FromHex("007D8C"),
+								TextColor = Color.FromHex("373152"),
                                 FontAttributes = FontAttributes.Bold,
                                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null)
                             },
@@ -301,7 +302,7 @@ namespace EGuardian.Views.Acceso
                                             emailView
                                         }
                                     },
-                                    new BoxView {BackgroundColor= Color.FromHex("007D8C"), HeightRequest=2 },
+									new BoxView {BackgroundColor= Color.FromHex("373152"), HeightRequest=2 },
                                     new BoxView {HeightRequest=0 }
                                 }
                             }
@@ -323,7 +324,7 @@ namespace EGuardian.Views.Acceso
                     {
                         Text = "Ingresa el código \r\nque has recibido \r\nen tu badeja de entrada",
                         HorizontalTextAlignment = TextAlignment.Center,
-                        TextColor = Color.FromHex("007D8C"),
+                        TextColor = Color.FromHex("312851"),
                         FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
                         FontSize = 18,
                         VerticalOptions = LayoutOptions.Center
@@ -337,7 +338,7 @@ namespace EGuardian.Views.Acceso
                             {
                                 Text ="CÓDIGO DE SEGURIDAD: *",
                                 FontSize = 13,
-                                TextColor = Color.FromHex("007D8C"),
+                                TextColor = Color.FromHex("312851"),
                                 FontAttributes = FontAttributes.Bold,
                                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null)
                             },
@@ -354,13 +355,13 @@ namespace EGuardian.Views.Acceso
                                             codigoView
                                         }
                                     },
-                                    new BoxView {BackgroundColor= Color.FromHex("007D8C"), HeightRequest=2 },
+                                    new BoxView {BackgroundColor= Color.FromHex("312851"), HeightRequest=2 },
                                     new BoxView {HeightRequest=0 }
                                 }
                             }
                         }
                     },
-                    //gridBotonValidar
+                    gridBotonValidar
                 }
             };
 
@@ -423,14 +424,14 @@ namespace EGuardian.Views.Acceso
                                 Source = "iSeguridad.png",
                                 WidthRequest = 15,
                                 HeightRequest = 15,
-                                Foreground = Color.FromHex("007D8C"),
+                                Foreground = Color.FromHex("312851"),
                                 VerticalOptions = LayoutOptions.Center
                             },
                             new Label
                             {
                                 Text = "Ingresa y confirma\r\ntu nueva contraseña",
                                 HorizontalTextAlignment = TextAlignment.Center,
-                                TextColor = Color.FromHex("007D8C"),
+                                TextColor = Color.FromHex("312851"),
                                 FontFamily = Device.OnPlatform("OpenSans-ExtraBold", "OpenSans-ExtraBold", null),
                                 FontSize = 18,
                                 VerticalOptions = LayoutOptions.Center
@@ -446,7 +447,7 @@ namespace EGuardian.Views.Acceso
                             {
                                 Text ="NUEVA CONTRASEÑA:*",
                                 FontSize = 13,
-                                TextColor = Color.FromHex("007D8C"),
+                                TextColor = Color.FromHex("312851"),
                                 FontAttributes = FontAttributes.Bold,
                                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null)
                             },
@@ -463,7 +464,7 @@ namespace EGuardian.Views.Acceso
                                             contraseniaView
                                         }
                                     },
-                                    new BoxView {BackgroundColor= Color.FromHex("007D8C"), HeightRequest=2 },
+                                    new BoxView {BackgroundColor= Color.FromHex("312851"), HeightRequest=2 },
                                     new BoxView {HeightRequest=0 }
                                 }
                             }
@@ -478,7 +479,7 @@ namespace EGuardian.Views.Acceso
                             {
                                 Text ="CONFIRMAR CONTRASEÑA:*",
                                 FontSize = 13,
-                                TextColor = Color.FromHex("007D8C"),
+                                TextColor = Color.FromHex("312851"),
                                 FontAttributes = FontAttributes.Bold,
                                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null)
                             },
@@ -495,13 +496,13 @@ namespace EGuardian.Views.Acceso
                                             contraseniaConfirmacionView
                                         }
                                     },
-                                    new BoxView {BackgroundColor= Color.FromHex("007D8C"), HeightRequest=2 },
+                                    new BoxView {BackgroundColor= Color.FromHex("312851"), HeightRequest=2 },
                                     new BoxView {HeightRequest=0 }
                                 }
                             }
                         }
                     },
-                    //gridBoton
+                    gridBoton
                 }
             };
 
@@ -519,7 +520,7 @@ namespace EGuardian.Views.Acceso
                     Padding = 5,
                     Spacing = 0,
                     Children = {
-                        //cerrar,
+                        cerrar,
                         new ScrollView
                         {
                             Padding= 0,
@@ -569,7 +570,7 @@ namespace EGuardian.Views.Acceso
                 }
                 else
                 {
-                    //ShowToast(ToastNotificationType.Error, "Recuperación de contraseña", "Servicio no disponible, intente más tarde.", 7);
+                    ShowToast(ToastNotificationType.Error, "Recuperación de contraseña", "Servicio no disponible, intente más tarde.", 7);
                     await Navigation.PopPopupAsync();
                 }
             }
@@ -612,50 +613,53 @@ namespace EGuardian.Views.Acceso
                 confirmacionContrasenia.Focus();
                 return;
             }
-           /* await Navigation.PushPopupAsync(new Indicador("Actualizando contraseña", Color.White));
-            try
-            {
-                PwdReset peticion = new PwdReset
-                {
-                    email = Usuario.Text,
-                    PwdReset_ID = PwdReset_ID,
-                    NewPwd = getContrasenia()
-                };
+            /* await Navigation.PushPopupAsync(new Indicador("Actualizando contraseña", Color.White));
+             try
+             {
+                 PwdReset peticion = new PwdReset
+                 {
+                     email = Usuario.Text,
+                     PwdReset_ID = PwdReset_ID,
+                     NewPwd = getContrasenia()
+                 };
 
-                var Respuesta = await App.ManejadorDatos.PwdResetAsync(peticion);
-                await Navigation.PopPopupAsync();
-                foreach (var user in Respuesta)
-                {
-                    if (user.Result_Cd.Equals("0") || user.Result_Cd.Equals("OK"))
-                    {
-                        Login(Usuario.Text, getContrasenia());
-                        return;
-                    }
-                    else if (user.Result_Cd.Equals("547"))
-                    {
-                        await DisplayAlert("¡Verifique!", "Ha ocurrido algo inesperado en la actualización de contraseña, inténtalo de nuevo.", "Aceptar");
-                        return;
-                    }
-                    else if (user.Result_Cd.Equals("111"))
-                    {
-                        await DisplayAlert("Cambio de contraseña", "Código de seguridad invalido, inténtalo de nuevo.", "Aceptar");
-                        return;
-                    }
-                    else
-                    {
-                        await DisplayAlert("Cambio de contraseña", user.Result_Msg, "Aceptar");
-                    }
-                }
-                if (Respuesta.Count == 0)
-                {
-                    ShowToast(ToastNotificationType.Error, "Cambio de contraseña", "Ha ocurrido algo inesperado en la actualización de contraseña, inténtalo de nuevo.", 7);
-                    return;
-                }
-            }
-            catch
-            {
-                await DisplayAlert("Cambio de contraseña", "¡Ha ocurrido algo inesperado!", "Aceptar");
-            }*/
+                 var Respuesta = await App.ManejadorDatos.PwdResetAsync(peticion);
+                 await Navigation.PopPopupAsync();
+                 foreach (var user in Respuesta)
+                 {
+                     if (user.Result_Cd.Equals("0") || user.Result_Cd.Equals("OK"))
+                     {
+                         Login(Usuario.Text, getContrasenia());
+                         return;
+                     }
+                     else if (user.Result_Cd.Equals("547"))
+                     {
+                         await DisplayAlert("¡Verifique!", "Ha ocurrido algo inesperado en la actualización de contraseña, inténtalo de nuevo.", "Aceptar");
+                         return;
+                     }
+                     else if (user.Result_Cd.Equals("111"))
+                     {
+                         await DisplayAlert("Cambio de contraseña", "Código de seguridad invalido, inténtalo de nuevo.", "Aceptar");
+                         return;
+                     }
+                     else
+                     {
+                         await DisplayAlert("Cambio de contraseña", user.Result_Msg, "Aceptar");
+                     }
+                 }
+                 if (Respuesta.Count == 0)
+                 {
+                     ShowToast(ToastNotificationType.Error, "Cambio de contraseña", "Ha ocurrido algo inesperado en la actualización de contraseña, inténtalo de nuevo.", 7);
+                     return;
+                 }
+             }
+             catch
+             {
+                 await DisplayAlert("Cambio de contraseña", "¡Ha ocurrido algo inesperado!", "Aceptar");
+             }*/
+            await Navigation.PopAllPopupAsync();
+            ShowToast(ToastNotificationType.Success, "Cambio de contraseña", "Tu cambio de contraseña fue exitoso.", 7);
+            MessagingCenter.Send<Forget>(this, "Forget");
         }
 
         async void Recuperar_Clicked(object sender, EventArgs e)
@@ -678,12 +682,12 @@ namespace EGuardian.Views.Acceso
                     return;
                 }
             }
-            this.IsBusy = true;
+            /*this.IsBusy = true;
             recuperar.IsEnabled = false;
             recuperar.IsVisible = false;
             gridBotonRecuperar.IsVisible = false;
             
-            /*
+
             PwdForget peticion = new PwdForget
             {
                 email = Usuario.Text,
@@ -727,10 +731,13 @@ namespace EGuardian.Views.Acceso
                         this.IsBusy = false;
                     }
                 }
-            }*/
+            }
             recuperar.IsVisible = true;
             recuperar.IsEnabled = true;
-            gridBotonRecuperar.IsVisible = true;
+            gridBotonRecuperar.IsVisible = true;*/
+
+            envioCodigo.IsVisible = false;
+            confirmacionCodigo.IsVisible = true;
         }
 
         private async void ShowToast(ToastNotificationType type, string titulo, string descripcion, int tiempo)

@@ -21,8 +21,9 @@ namespace EGuardian.Common.Resources
         public static readonly string Menu2 = "Incidencias";
         public static readonly string Menu3 = "Perfil y colaboradores";
         public static readonly string Menu4 = "Reportes";
-        public static readonly string Menu5 = "API";        
-        public static readonly string Menu6 = "Salir";
+        public static readonly string Menu5 = "API";
+        public static readonly string Menu6 = "Configuración";
+        public static readonly string Menu7 = "Salir";
 
         public static readonly string SocialMedia1 = "https://facebook.com";
         public static readonly string SocialMedia2 = "https://twitter.com";

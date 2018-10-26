@@ -34,5 +34,16 @@
 	<string>EGuardian</string>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Fonts/OpenSans-Regular.ttf</string>
+		<string>Fonts/OpenSans-Bold.ttf</string>
+		<string>Fonts/OpenSans-ExtraBold.ttf</string>
+		<string>Fonts/OpenSans-Light.ttf</string>
+		<string>Fonts/Roboto-Black.ttf</string>
+		<string>Fonts/Roboto-Bold.ttf</string>
+		<string>Fonts/Roboto-Light.ttf</string>
+		<string>Fonts/Roboto-Regular.ttf</string>
+	</array>
 </dict>
 </plist>

@@ -1,10 +1,10 @@
 ﻿using EGuardian.Common.Resources;
+using EGuardian.Helpers;
 using EGuardian.Models.Menu;
 using EGuardian.Views.Ajustes;
 using EGuardian.Views.API;
 using EGuardian.Views.Eventos;
 using EGuardian.Views.Incidencias;
-using EGuardian.Views.Inicio;
 using EGuardian.Views.Perfil;
 using EGuardian.Views.Reportes;
 using System;
@@ -25,11 +25,25 @@ namespace EGuardian.Views.Menu
             Title = Strings.MenuTitle;
             Master = Menu;
             MasterBehavior = MasterBehavior.Popover;
-            NavigateFromMenu((int)MenuItemType.Inicio);
+            NavigateFromMenu((int)MenuItemType.Eventos);
         }
 
         public async Task NavigateFromMenu(int id)
         {
+            if((int)MenuItemType.Salir==id)
+            {
+                Settings.session_Session_Token = null;
+                Settings.session_idUsuario = null;
+
+                if (string.IsNullOrEmpty((Settings.session_Session_Token)))
+                {
+                    if ((Device.OS == TargetPlatform.iOS) || (Device.OS == TargetPlatform.Android))
+                    {
+                        MessagingCenter.Send<MainPage>(this, "noAutenticado");
+                    }
+                }
+                return;
+            }
             if (!MenuPages.ContainsKey(id))
                 AddMenuPage(id);
 
@@ -51,9 +65,6 @@ namespace EGuardian.Views.Menu
         {
             switch (id)
             {
-                case (int)MenuItemType.Inicio:
-                    MenuPages.Add(id, new NavigationPage(new InicioPage()));
-                    break;
                 case (int)MenuItemType.Eventos:
                     MenuPages.Add(id, new NavigationPage(new EventosPage()));
                     break;

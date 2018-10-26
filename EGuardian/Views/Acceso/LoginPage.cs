@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Plugin.Toasts;
 using Xamarin.Forms;
+using EGuardian.Helpers;
 
 namespace EGuardian.Views.Acceso
 {
@@ -21,8 +22,8 @@ namespace EGuardian.Views.Acceso
         {
             MessagingCenter.Subscribe<Registro>(this, "Registro", (sender) =>
             {
-                //Usuario.Text = sender.correo.Text;
-                //Contrasenia.Text = sender.contrasenia.Text;
+                Usuario.Text = sender.correo.Text;
+                Contrasenia.Text = sender.contrasenia.Text;
             });
 
             MessagingCenter.Subscribe<Forget>(this, "Forget", (sender) =>
@@ -214,8 +215,22 @@ namespace EGuardian.Views.Acceso
             {
                 Content = content
             };
-            BackgroundImage = "login_bk";
-            Content = contenido;
+            Content = new Grid
+            {
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                Children =
+                {
+                    new Image
+                    {
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        VerticalOptions = LayoutOptions.FillAndExpand,
+                        Aspect = Aspect.AspectFill,
+                        Source="login_bk",
+                    },
+                    contenido
+                }
+            };
         }
 
         private void Registro_Clicked(object sender, EventArgs e)
@@ -253,8 +268,8 @@ namespace EGuardian.Views.Acceso
             }
             this.IsBusy = true;
             login.IsEnabled = false;
-            login.IsVisible = false;                        
-            
+            login.IsVisible = false;
+
             /*Login peticion = new Login
             {
                 email = Usuario.Text,
@@ -319,6 +334,7 @@ namespace EGuardian.Views.Acceso
                     }
                 }
             }*/
+            MessagingCenter.Send<LoginPage>(this, "Autenticado");
         }
         protected override void OnAppearing()
         {

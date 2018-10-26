@@ -18,12 +18,11 @@ namespace EGuardian.Common.Resources
 
         public static readonly Color MenuBackground = Color.White;
         public static readonly Color BarTextColor = Color.White;
-        public static readonly Color BarBackgroundColor = Color.Transparent;
+        public static readonly Color BarBackgroundColor = Color.FromHex("302C91");
         public static readonly Color MenuTitle = Color.FromHex("BFBFBF");
         public static readonly Color MenuIcon = Color.FromHex("a2a8b3");
 
         public static readonly Color SocialMediaIcon = Color.FromHex("");
         public static readonly Color SocialMediaIconShadow = Color.FromHex("");
-
     }
 }

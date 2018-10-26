@@ -37,5 +37,39 @@ namespace EGuardian.Data
         public static int isEnableSelected = 1;
         public static int isEnableUnSelected = 0;
 
+        public static bool PantallaAbierta = false;
+
+        public static Dictionary<string, string> genero = new Dictionary<string, string>
+        {
+            { "MASCULINO", "M" },
+            { "FEMENINO", "F" }
+        };
+
+
+        public static Dictionary<string, string> colaboradores = new Dictionary<string, string>
+        {
+            { "De 0 a 10", "1" },
+            { "De 11 a 100", "2" },
+            { "De 101 a 500", "3" },
+            { "Más de 501 ", "4" }
+        };
+
+        public static Dictionary<string, string> sectores = new Dictionary<string, string>
+        {
+            { "Financiero", "1" },
+            { "Ingeniería", "2" },
+            { "Mercadotecnia", "3" },
+            { "Textil", "4" }
+        };
+
+        public static Dictionary<string, string> puestos = new Dictionary<string, string>
+        {
+            { "Gerente G.", "1" },
+            { "Supervisor", "2" },
+            { "Asesor", "3" },
+            { "RRHH", "4" }
+        };
+
+        public static int[] horas = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24};
     }
 }

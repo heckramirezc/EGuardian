@@ -25,8 +25,6 @@ namespace EGuardian.Helpers
 
         private const string Session_Token = "Session_Token";
         private const string idUsuario = "idUsuario";
-        private const string subscriptionKey = "subscriptionKey";
-        private const string metodoPago = "metodoPago";
         private static readonly string Predeterminado = string.Empty;
         private const string lastUpdate = "lastUpdate";
         private static readonly DateTime lastUpdateDefault = new DateTime(2018, 1, 1, 0, 0, 0, DateTimeKind.Local);
@@ -58,30 +56,6 @@ namespace EGuardian.Helpers
             set
             {
                 AppSettings.AddOrUpdateValue(idUsuario, value);
-            }
-        }
-
-        public static string session_SubscriptionKey
-        {
-            get
-            {
-                return AppSettings.GetValueOrDefault(subscriptionKey, Predeterminado);
-            }
-            set
-            {
-                AppSettings.AddOrUpdateValue(subscriptionKey, value);
-            }
-        }
-
-        public static string session_MetodoPago
-        {
-            get
-            {
-                return AppSettings.GetValueOrDefault(metodoPago, Predeterminado);
-            }
-            set
-            {
-                AppSettings.AddOrUpdateValue(metodoPago, value);
             }
         }
 

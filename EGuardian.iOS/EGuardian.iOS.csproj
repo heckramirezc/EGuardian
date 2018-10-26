@@ -73,6 +73,18 @@
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Renderers\ExtendedDatePickerRenderer.cs" />
+    <Compile Include="Renderers\ExtendedEditorRenderer.cs" />
+    <Compile Include="Renderers\ExtendedEntryRenderer.cs" />
+    <Compile Include="Renderers\ExtendedLabelRenderer.cs" />
+    <Compile Include="Renderers\ExtendedListViewRenderer.cs" />
+    <Compile Include="Renderers\ExtendedPdfViewRenderer.cs" />
+    <Compile Include="Renderers\ExtendedPickerRenderer.cs" />
+    <Compile Include="Renderers\ExtendedScrollViewRenderer.cs" />
+    <Compile Include="Renderers\ExtendedViewCellRenderer.cs" />
+    <Compile Include="Renderers\FrameViewRenderer.cs" />
+    <Compile Include="Renderers\IconViewRenderer.cs" />
+    <Compile Include="Services\SQLite_iOS.cs" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
@@ -117,15 +129,6 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon20.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <BundleResource Include="Resources\tab_about.png" />
-    <BundleResource Include="Resources\tab_about%402x.png" />
-    <BundleResource Include="Resources\tab_about%403x.png" />
-    <BundleResource Include="Resources\tab_feed.png" />
-    <BundleResource Include="Resources\tab_feed%402x.png" />
-    <BundleResource Include="Resources\tab_feed%403x.png" />
-    <BundleResource Include="Resources\xamarin_logo.png" />
-    <BundleResource Include="Resources\xamarin_logo%402x.png" />
-    <BundleResource Include="Resources\xamarin_logo%403x.png" />
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +155,18 @@
     </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="3.1.0.697729" />
     <PackageReference Include="Xamarin.TestCloud.Agent" Version="0.21.5" />
+    <PackageReference Include="Xam.Plugins.Forms.RoundedBoxView">
+      <Version>1.0.0.7</Version>
+    </PackageReference>
+    <PackageReference Include="SuaveControls.FloatingActionButton">
+      <Version>2018.1.5</Version>
+    </PackageReference>
+    <PackageReference Include="Refractored.XamForms.PullToRefresh">
+      <Version>2.2.2</Version>
+    </PackageReference>
+    <PackageReference Include="Xam.Plugins.Forms.ImageCircle">
+      <Version>3.0.0.5</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
@@ -159,5 +174,260 @@
       <Project>{AF1F9F1A-64F7-470C-8646-AE899146C94F}</Project>
       <Name>EGuardian</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\email.png" />
+    <BundleResource Include="Resources\indicator_fill.png" />
+    <BundleResource Include="Resources\indicator.png" />
+    <BundleResource Include="Resources\key.png" />
+    <BundleResource Include="Resources\login_bk.png" />
+    <BundleResource Include="Resources\logo.png" />
+    <BundleResource Include="Resources\splash.jpg" />
+    <BundleResource Include="Resources\tutorial_bk.png" />
+    <BundleResource Include="Resources\tutorialItem1.png" />
+    <BundleResource Include="Resources\tutorialItem2.png" />
+    <BundleResource Include="Resources\tutorialItem3.png" />
+    <BundleResource Include="Resources\tutorialItem4.png" />
+    <BundleResource Include="Resources\menu.png" />
+    <BundleResource Include="Resources\tutorialItem1%402x.png" />
+    <BundleResource Include="Resources\tutorialItem1%403x.png" />
+    <BundleResource Include="Resources\tutorialItem2%402x.png" />
+    <BundleResource Include="Resources\tutorialItem2%403x.png" />
+    <BundleResource Include="Resources\tutorialItem3%402x.png" />
+    <BundleResource Include="Resources\tutorialItem3%403x.png" />
+    <BundleResource Include="Resources\tutorialItem4%402x.png" />
+    <BundleResource Include="Resources\tutorialItem4%403x.png" />
+    <BundleResource Include="Resources\add.png" />
+    <BundleResource Include="Resources\add%402x.png" />
+    <BundleResource Include="Resources\bk_profile.png" />
+    <BundleResource Include="Resources\contactcard.png" />
+    <BundleResource Include="Resources\contactcard%402x.png" />
+    <BundleResource Include="Resources\Default-iPad.png" />
+    <BundleResource Include="Resources\Default-iPad%402x.png" />
+    <BundleResource Include="Resources\fechaActual.png" />
+    <BundleResource Include="Resources\fechaSeleccionada.png" />
+    <BundleResource Include="Resources\headerAjustes.jpg" />
+    <BundleResource Include="Resources\headerCaja.jpg" />
+    <BundleResource Include="Resources\headerCitas.jpg" />
+    <BundleResource Include="Resources\headerExpediente.png" />
+    <BundleResource Include="Resources\headerInfoAyuda.jpg" />
+    <BundleResource Include="Resources\headerLaboratorios.jpg" />
+    <BundleResource Include="Resources\headerPacientes.jpg" />
+    <BundleResource Include="Resources\headerReceta.jpg" />
+    <BundleResource Include="Resources\headerRecetas.jpg" />
+    <BundleResource Include="Resources\headerRegistro.png" />
+    <BundleResource Include="Resources\iAcceso.png" />
+    <BundleResource Include="Resources\iAdHonorem.png" />
+    <BundleResource Include="Resources\iAgenda.png" />
+    <BundleResource Include="Resources\iAltura.png" />
+    <BundleResource Include="Resources\iAntecedentes.png" />
+    <BundleResource Include="Resources\iAnterior.png" />
+    <BundleResource Include="Resources\iAnteriorC.png" />
+    <BundleResource Include="Resources\iArchivo.png" />
+    <BundleResource Include="Resources\iAvatar.png" />
+    <BundleResource Include="Resources\iAyuda.png" />
+    <BundleResource Include="Resources\iBusquedaIndicador.png" />
+    <BundleResource Include="Resources\iBusquedaPacientes.png" />
+    <BundleResource Include="Resources\ic_arrow_drop_down_black_24dp.png" />
+    <BundleResource Include="Resources\iCaja.png" />
+    <BundleResource Include="Resources\iCalendar.png" />
+    <BundleResource Include="Resources\iCalendars.png" />
+    <BundleResource Include="Resources\iCancelarA.png" />
+    <BundleResource Include="Resources\iCancelarB.png" />
+    <BundleResource Include="Resources\iCancelarBusqueda.png" />
+    <BundleResource Include="Resources\iCancelarEdicion.png" />
+    <BundleResource Include="Resources\iCheque.png" />
+    <BundleResource Include="Resources\iCirculo.png" />
+    <BundleResource Include="Resources\iCitaDetalle.png" />
+    <BundleResource Include="Resources\iCitaPaciente.png" />
+    <BundleResource Include="Resources\iCitaReloj.png" />
+    <BundleResource Include="Resources\iClinica.png" />
+    <BundleResource Include="Resources\iComentario.png" />
+    <BundleResource Include="Resources\icon-57.png" />
+    <BundleResource Include="Resources\icon-72.png" />
+    <BundleResource Include="Resources\Icon-72%402x.png" />
+    <BundleResource Include="Resources\icon-76.png" />
+    <BundleResource Include="Resources\icon-114.png" />
+    <BundleResource Include="Resources\icon-120.png" />
+    <BundleResource Include="Resources\icon-144.png" />
+    <BundleResource Include="Resources\icon-152.png" />
+    <BundleResource Include="Resources\Icon-iPad%402x.png" />
+    <BundleResource Include="Resources\Icon.png" />
+    <BundleResource Include="Resources\Icon%402x.png" />
+    <BundleResource Include="Resources\iConfiguracion.png" />
+    <BundleResource Include="Resources\iConsultas.png" />
+    <BundleResource Include="Resources\iContinuar.png" />
+    <BundleResource Include="Resources\iCorreo.png" />
+    <BundleResource Include="Resources\iDesarrollo.jpg" />
+    <BundleResource Include="Resources\iDetalle.png" />
+    <BundleResource Include="Resources\idropdown.png" />
+    <BundleResource Include="Resources\iDropdownA.png" />
+    <BundleResource Include="Resources\iDropdownB.png" />
+    <BundleResource Include="Resources\idropdownEditor.png" />
+    <BundleResource Include="Resources\iEdad.png" />
+    <BundleResource Include="Resources\iEdicion.png" />
+    <BundleResource Include="Resources\iEfectivo.png" />
+    <BundleResource Include="Resources\iEnviar.png" />
+    <BundleResource Include="Resources\iFAB.png" />
+    <BundleResource Include="Resources\iFABa.png" />
+    <BundleResource Include="Resources\iFABNC.png" />
+    <BundleResource Include="Resources\iFABNP.png" />
+    <BundleResource Include="Resources\iFABP.png" />
+    <BundleResource Include="Resources\iFABPa.png" />
+    <BundleResource Include="Resources\iFABPNC.png" />
+    <BundleResource Include="Resources\iFABPNP.png" />
+    <BundleResource Include="Resources\iFenac.png" />
+    <BundleResource Include="Resources\iGeneroF.png" />
+    <BundleResource Include="Resources\iGeneroM.png" />
+    <BundleResource Include="Resources\iHistoriaClinica.png" />
+    <BundleResource Include="Resources\iKeyboard.png" />
+    <BundleResource Include="Resources\iKeyboardA.png" />
+    <BundleResource Include="Resources\iLaboratorios.png" />
+    <BundleResource Include="Resources\iLlamar.png" />
+    <BundleResource Include="Resources\images.png" />
+    <BundleResource Include="Resources\iMedicion.png" />
+    <BundleResource Include="Resources\iMediciones.png" />
+    <BundleResource Include="Resources\iMedico.png" />
+    <BundleResource Include="Resources\iMensaje.png" />
+    <BundleResource Include="Resources\iNCinfo.png" />
+    <BundleResource Include="Resources\indicator_emtpy.png" />
+    <BundleResource Include="Resources\info.png" />
+    <BundleResource Include="Resources\iNota.png" />
+    <BundleResource Include="Resources\iNPadmin.png" />
+    <BundleResource Include="Resources\iNPinfo.png" />
+    <BundleResource Include="Resources\iNPlocaliza.png" />
+    <BundleResource Include="Resources\iObservaciones.png" />
+    <BundleResource Include="Resources\iPacientes.png" />
+    <BundleResource Include="Resources\iPacientesBusqueda.png" />
+    <BundleResource Include="Resources\iPacientesCancelarBusqueda.png" />
+    <BundleResource Include="Resources\iPassView.png" />
+    <BundleResource Include="Resources\iPerfil.png" />
+    <BundleResource Include="Resources\iPerson_h.png" />
+    <BundleResource Include="Resources\iPerson_m.png" />
+    <BundleResource Include="Resources\iPeso.png" />
+    <BundleResource Include="Resources\iRecetas.png" />
+    <BundleResource Include="Resources\iReferencias.png" />
+    <BundleResource Include="Resources\iReloj.png" />
+    <BundleResource Include="Resources\iResultados.png" />
+    <BundleResource Include="Resources\iSalir.png" />
+    <BundleResource Include="Resources\iSangre.png" />
+    <BundleResource Include="Resources\iSeguridad.png" />
+    <BundleResource Include="Resources\iSiguiente.png" />
+    <BundleResource Include="Resources\iSiguienteC.png" />
+    <BundleResource Include="Resources\iTarjetaCredito.png" />
+    <BundleResource Include="Resources\iTelefono.png" />
+    <BundleResource Include="Resources\iTemperatura.png" />
+    <BundleResource Include="Resources\iUbicacion.png" />
+    <BundleResource Include="Resources\iWeb.png" />
+    <BundleResource Include="Resources\Login.png" />
+    <BundleResource Include="Resources\map.png" />
+    <BundleResource Include="Resources\map%402x.png" />
+    <BundleResource Include="Resources\mas.png" />
+    <BundleResource Include="Resources\mas%402x.png" />
+    <BundleResource Include="Resources\mas%403x.png" />
+    <BundleResource Include="Resources\menu%402x.png" />
+    <BundleResource Include="Resources\menu%403x.png" />
+    <BundleResource Include="Resources\menubk.png" />
+    <BundleResource Include="Resources\menubk%402x.png" />
+    <BundleResource Include="Resources\order.png" />
+    <BundleResource Include="Resources\order%402x.png" />
+    <BundleResource Include="Resources\orderhistory.png" />
+    <BundleResource Include="Resources\orderhistory%402x.png" />
+    <BundleResource Include="Resources\plus.png" />
+    <BundleResource Include="Resources\productcatalog.png" />
+    <BundleResource Include="Resources\productcatalog%402x.png" />
+    <BundleResource Include="Resources\refresh.png" />
+    <BundleResource Include="Resources\refresh%402x.png" />
+    <BundleResource Include="Resources\save.png" />
+    <BundleResource Include="Resources\save%402x.png" />
+    <BundleResource Include="Resources\settings.png" />
+    <BundleResource Include="Resources\settings%402x.png" />
+    <BundleResource Include="Resources\slideout.png" />
+    <BundleResource Include="Resources\slideout%402x.png" />
+    <BundleResource Include="Resources\splash_bk.png" />
+    <BundleResource Include="Resources\splash1.png" />
+    <BundleResource Include="Resources\splash2.png" />
+    <BundleResource Include="Resources\splash3.png" />
+    <BundleResource Include="Resources\splash4.png" />
+    <BundleResource Include="Resources\xamarin-icon-simplified.png" />
+    <BundleResource Include="Resources\zoom_in.png" />
+    <BundleResource Include="Resources\zoom_out.png" />
+    <BundleResource Include="Resources\indicator_fill%402x.png" />
+    <BundleResource Include="Resources\indicator_fill%403x.png" />
+    <BundleResource Include="Resources\indicator%402x.png" />
+    <BundleResource Include="Resources\indicator%403x.png" />
+    <BundleResource Include="Resources\Fonts\OpenSans-Bold.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="Resources\Fonts\OpenSans-ExtraBold.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="Resources\Fonts\OpenSans-Light.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="Resources\Fonts\OpenSans-Regular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="Resources\Fonts\Roboto-Black.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="Resources\Fonts\Roboto-Bold.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="Resources\Fonts\Roboto-Light.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="Resources\Fonts\Roboto-Regular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="Resources\splash.png" />
+    <BundleResource Include="Resources\splash%402x.png" />
+    <BundleResource Include="Resources\splash%403x.png" />
+    <BundleResource Include="Resources\login_bk%402x.png" />
+    <BundleResource Include="Resources\login_bk%403x.png" />
+    <BundleResource Include="Resources\logo%402x.png" />
+    <BundleResource Include="Resources\logo%403x.png" />
+    <BundleResource Include="Resources\headerRegistro%402x.png" />
+    <BundleResource Include="Resources\headerRegistro%403x.png" />
+    <BundleResource Include="Resources\iEmpresa.png" />
+    <BundleResource Include="Resources\iEmpresa%402x.png" />
+    <BundleResource Include="Resources\iEmpresa%403x.png" />
+    <BundleResource Include="Resources\iNPadmin%402x.png" />
+    <BundleResource Include="Resources\iNPadmin%403x.png" />
+    <BundleResource Include="Resources\bk_profile%402x.png" />
+    <BundleResource Include="Resources\bk_profile%403x.png" />
+    <BundleResource Include="Resources\iAPI.png" />
+    <BundleResource Include="Resources\iAPI%402x.png" />
+    <BundleResource Include="Resources\iAPI%403x.png" />
+    <BundleResource Include="Resources\iAvatar%402x.png" />
+    <BundleResource Include="Resources\iAvatar%403x.png" />
+    <BundleResource Include="Resources\iConfiguracion%402x.png" />
+    <BundleResource Include="Resources\iConfiguracion%403x.png" />
+    <BundleResource Include="Resources\iEventos.png" />
+    <BundleResource Include="Resources\iEventos%402x.png" />
+    <BundleResource Include="Resources\iEventos%403x.png" />
+    <BundleResource Include="Resources\iIncidencias.png" />
+    <BundleResource Include="Resources\iIncidencias%402x.png" />
+    <BundleResource Include="Resources\iIncidencias%403x.png" />
+    <BundleResource Include="Resources\iPerfil%402x.png" />
+    <BundleResource Include="Resources\iPerfil%403x.png" />
+    <BundleResource Include="Resources\iReportes.png" />
+    <BundleResource Include="Resources\iReportes%402x.png" />
+    <BundleResource Include="Resources\iReportes%403x.png" />
+    <BundleResource Include="Resources\iSalir%402x.png" />
+    <BundleResource Include="Resources\iSalir%403x.png" />
+    <BundleResource Include="Resources\headerEventos.png" />
+    <BundleResource Include="Resources\headerEventos%402x.png" />
+    <BundleResource Include="Resources\headerEventos%403x.png" />
+    <BundleResource Include="Resources\iFABPa%402x.png" />
+    <BundleResource Include="Resources\iFABPa%403x.png" />
+    <BundleResource Include="Resources\iAlertas.png" />
+    <BundleResource Include="Resources\iAlertas%402x.png" />
+    <BundleResource Include="Resources\iAlertas%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Renderers\" />
+    <Folder Include="Resources\Fonts\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 </Project>

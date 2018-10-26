@@ -2,6 +2,7 @@
 using EGuardian.Controls;
 using EGuardian.Data;
 using EGuardian.ViewModels.Menu;
+using Rg.Plugins.Popup.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,8 +15,6 @@ namespace EGuardian.Views.Menu
     {
         public ExtendedListView ListViewMenu { get; private set; }
         public MenuVistaModelo modeloVista;
-        ActivityIndicator facebookIndicador, twitterIndicador, messengerIndicador;        
-        Grid facebook, twitter, messenger;
 
         MainPage RootPage { get => Application.Current.MainPage as MainPage; }
 
@@ -35,272 +34,71 @@ namespace EGuardian.Views.Menu
                 IsPullToRefreshEnabled = false,
                 SeparatorVisibility = SeparatorVisibility.None,
                 SeparatorColor = Color.White,
-                HasUnevenRows = false
-            };
-
-            Label header = new Label
-            {
-                HorizontalTextAlignment = TextAlignment.Center,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                Text = "MENÚ",
-                FontFamily = Device.OnPlatform("Montserrat-Bold", "Montserrat-Bold", null),
-                TextColor = Color.FromHex("4D4D4D"),
-                FontSize = (App.DisplayScreenWidth / 15.04)
-            };
-
-            facebook = new Grid
-            {
-                Children =
-                {
-                    new Image
-                    {
-                        HorizontalOptions = LayoutOptions.Start,
-                        VerticalOptions = LayoutOptions.Center,
-                        HeightRequest = (App.DisplayScreenHeight / 36.909090909090909),
-                        //WidthRequest = (App.DisplayScreenHeight / 13.853658536585366),
-                        Aspect = Aspect.AspectFit,
-                        Source = "iFacebook",
-                    }
-                }
-            };
-
-            twitter = new Grid
-            {
-                Children =
-                {
-                    new Image
-                    {
-                        HorizontalOptions = LayoutOptions.Center,
-                        VerticalOptions = LayoutOptions.Center,
-                        HeightRequest = (App.DisplayScreenHeight / 36.909090909090909),
-                        //WidthRequest = (App.DisplayScreenHeight / 13.853658536585366),
-                        Aspect = Aspect.AspectFit,
-                        Source = "iTwitter",
-
-                    }
-                }
-            };
-
-            messenger = new Grid
-            {
-                Children =
-                {
-                    new Image
-                    {
-                        HorizontalOptions = LayoutOptions.End,
-                        VerticalOptions = LayoutOptions.Center,
-                        HeightRequest = (App.DisplayScreenHeight / 36.909090909090909),
-                        //WidthRequest = (App.DisplayScreenHeight / 13.853658536585366),
-                        Aspect = Aspect.AspectFit,
-                        Source = "iMessenger",
-
-                    }
-                }
-            };
-
-            facebookIndicador = new ActivityIndicator
-            {
-                HeightRequest = (App.DisplayScreenHeight / 36.909090909090909),
-                WidthRequest = (App.DisplayScreenHeight / 36.909090909090909),
-                IsRunning = false,
-                IsVisible = false
-            };
-
-            twitterIndicador = new ActivityIndicator
-            {
-                HeightRequest = (App.DisplayScreenHeight / 36.909090909090909),
-                WidthRequest = (App.DisplayScreenHeight / 36.909090909090909),
-                IsRunning = false,
-                IsVisible = false
-
-            };
-
-            messengerIndicador = new ActivityIndicator
-            {
-                HeightRequest = (App.DisplayScreenHeight / 36.909090909090909),
-                WidthRequest = (App.DisplayScreenHeight / 36.909090909090909),
-                IsRunning = false,
-                IsVisible = false
-
-            };
-
-
-
-            TapGestureRecognizer facebookTAP = new TapGestureRecognizer();
-            TapGestureRecognizer twitterTAP = new TapGestureRecognizer();
-            TapGestureRecognizer messengerTAP = new TapGestureRecognizer();
-            facebookTAP.NumberOfTapsRequired = 1;
-            twitterTAP.NumberOfTapsRequired = 1;
-            messengerTAP.NumberOfTapsRequired = 1;
-            facebookTAP.Tapped += async (object sender, EventArgs e) =>
-            {
-                facebookIndicador.IsVisible = true;
-                facebookIndicador.IsRunning = true;
-                facebook.IsVisible = false;
-                Device.OpenUri(new Uri("fb://profile/604146393288718"));
-                await Task.Delay(2000);
-                if (Constants.RedSocialPresentada)
-                {
-                    Constants.RedSocialPresentada = false;
-                }
-                else
-                {
-                    Device.OpenUri(new Uri("https://www.facebook.com/Pampsip/"));
-                }
-                facebookIndicador.IsVisible = false;
-                facebookIndicador.IsRunning = false;
-                facebook.IsVisible = true;
-            };
-
-            twitterTAP.Tapped += async (object sender, EventArgs e) =>
-            {
-                twitterIndicador.IsVisible = true;
-                twitterIndicador.IsRunning = true;
-                twitter.IsVisible = false;
-                Device.OpenUri(new Uri("twitter://user?user_id=999476282705502208"));
-                //Device.OpenUri(new Uri("twitter://userName?user_id=198829810"));
-                await Task.Delay(2000);
-                if (Constants.RedSocialPresentada)
-                {
-                    Constants.RedSocialPresentada = false;
-                }
-                else
-                {
-                    Device.OpenUri(new Uri("https://twitter.com/pamsip1"));
-                }
-                twitterIndicador.IsVisible = false;
-                twitterIndicador.IsRunning = false;
-                twitter.IsVisible = true;
-            };
-
-            messengerTAP.Tapped += async (object sender, EventArgs e) =>
-            {
-                messengerIndicador.IsVisible = true;
-                messengerIndicador.IsRunning = true;
-                messenger.IsVisible = false;
-                Device.OpenUri(new Uri("https://www.messenger.com/t/604146393288718"));
-                messengerIndicador.IsVisible = false;
-                messengerIndicador.IsRunning = false;
-                messenger.IsVisible = true;
-            };
-            facebook.GestureRecognizers.Add(facebookTAP);
-            twitter.GestureRecognizers.Add(twitterTAP);
-            messenger.GestureRecognizers.Add(messengerTAP);
-
-            Grid redesSociales = new Grid
-            {
-                WidthRequest = App.DisplayScreenHeight / 5.010180786080089,
-                HeightRequest = App.DisplayScreenHeight / 36.909090909090909,
-                Padding = 0,
-                ColumnSpacing = 0,
-                HorizontalOptions = LayoutOptions.Center,
-                RowDefinitions = {
-                    new RowDefinition { Height = new GridLength ((App.DisplayScreenHeight / 36.909090909090909), GridUnitType.Absolute) }},
-                ColumnDefinitions = {
-                    new ColumnDefinition { Width = new GridLength ((App.DisplayScreenHeight / 15.030542358240267), GridUnitType.Absolute) },
-                    new ColumnDefinition { Width = new GridLength ((App.DisplayScreenHeight / 15.030542358240267), GridUnitType.Absolute) },
-                    new ColumnDefinition { Width = new GridLength ((App.DisplayScreenWidth / 15.030542358240267), GridUnitType.Star) }
-                }
-            };
-
-            redesSociales.Children.Add(new Grid { Children = { facebookIndicador, facebook } }, 0, 0);
-            redesSociales.Children.Add(new Grid { Children = { twitterIndicador, twitter } }, 1, 0);
-            redesSociales.Children.Add(new Grid { Children = { messengerIndicador, messenger } }, 2, 0);
-
-            Grid RedesSociales = new Grid
-            {
-                Padding = 0,
-                HeightRequest = App.DisplayScreenHeight / 36.909090909090909,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                Children =
-                {
-                    redesSociales
-                }
-            };
-
-
-
-            Button cerrarSesion = new Button
-            {
-                Margin = 0,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                Text = "cerrar sesión",
-                TextColor = Color.FromHex("BFBFBF"),
-                FontFamily = Fonts.ButtonFont,
-                FontSize = ((App.DisplayScreenHeight / 54.133333333333333)),
-                WidthRequest = App.DisplayScreenHeight / 5.678321678321678,
-                HeightRequest = App.DisplayScreenHeight / 40.6
-            };
-
-            Grid CerrarSesion = new Grid
-            {
-                Children =
-                {
-                    new StackLayout
-                    {
-                        HeightRequest = App.DisplayScreenHeight / 32.48,
-                        WidthRequest = App.DisplayScreenHeight / 5.678321678321678,
-                        Spacing = App.DisplayScreenHeight/162.4,
-                        HorizontalOptions = LayoutOptions.Center,
-                        Children =
-                        {
-                            cerrarSesion,
-                            new BoxView
-                            {
-                                HorizontalOptions = LayoutOptions.FillAndExpand,
-                                BackgroundColor = Color.FromHex("BFBFBF"),
-                                HeightRequest = (App.DisplayScreenWidth / 341.818181818181818),
-                                Opacity = 0.25
-                            }
-                        }
-                    }
-                }
-            };
-
-            cerrarSesion.Clicked += CerrarSesion_Clicked;
-
-
-
-            ListViewMenu.ItemTemplate = new DataTemplate(typeof(MenuDTViewModel));
-
-
-            RelativeLayout Contenido = new RelativeLayout()
-            {
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HasUnevenRows = false,
                 VerticalOptions = LayoutOptions.FillAndExpand,
             };
 
+            Grid Header = new Grid
+            {
+                AutomationId = "Settings",
+                Padding = new Thickness(15, 15),
+                ColumnSpacing = 0,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.Center,
+                RowDefinitions = {
+                    new RowDefinition { Height = new GridLength (0, GridUnitType.Auto) },
+                    new RowDefinition { Height = new GridLength (0, GridUnitType.Auto) },
+                },
+                ColumnDefinitions = {
+                    new ColumnDefinition { Width = new GridLength (40, GridUnitType.Star) },
+                    new ColumnDefinition { Width = new GridLength (1, GridUnitType.Auto) }
+                }
+            };
 
+            Header.Children.Add(new Image
+            {
+                Margin = new Thickness(5, 0),
+                Source = "iAvatar.png",
+                WidthRequest = 75,
+                VerticalOptions = LayoutOptions.End,
+                HorizontalOptions = LayoutOptions.Start
+            }, 0, 0);
+            Header.Children.Add(new Label
+            {
 
-            Contenido.Children.Add(header,
-                               Constraint.Constant(0),
-                               Constraint.Constant(Device.RuntimePlatform == Device.iOS ? (App.DisplayScreenHeight / 8.923076923076923) : (App.DisplayScreenHeight / 10.278481012658228)),
-                               Constraint.RelativeToParent((arg) => { return arg.Width; })
-                             );
+                Text = "Azul naranja",
+                TextColor = Color.White,
+                FontSize = 16,
+                VerticalOptions = LayoutOptions.Center,
+                VerticalTextAlignment = TextAlignment.Center,
+                FontFamily = Device.OnPlatform("OpenSans-ExtraBold", "OpenSans-ExtraBold", null)
+            }, 0, 1);
 
-            Contenido.Children.Add(ListViewMenu,
-                              Constraint.Constant(0),
-                              Constraint.Constant(Device.RuntimePlatform == Device.iOS ? (App.DisplayScreenHeight / 3.029850746268657) : (App.DisplayScreenHeight / 3.171875)),
-                              Constraint.RelativeToParent((arg) => { return arg.Width; }),
-                              Constraint.Constant(App.DisplayScreenHeight / 2.942028985507246)
-                             );                    
+            ListViewMenu.ItemTemplate = new DataTemplate(typeof(MenuDTViewModel));
 
-            Contenido.Children.Add(CerrarSesion,
-                              Constraint.Constant(0),
-                              Constraint.Constant(Device.RuntimePlatform == Device.iOS ? (App.DisplayScreenHeight / 1.087014725568942) : (App.DisplayScreenHeight / 1.104761904761905)),
-                              Constraint.RelativeToParent((arg) => { return arg.Width; }),
-                              Constraint.Constant(App.DisplayScreenHeight / 32.48)
-                             );
+            Content = new StackLayout
+            {
+                Padding = new Thickness(0, 0, 0, 0),
+                Spacing = 20,
+                VerticalOptions = LayoutOptions.StartAndExpand,
+                Children =
+                {
+                    new Grid
+                    {
+                        HeightRequest = 150,
+                        MinimumHeightRequest = 150,
+                        Padding = 0,
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        Children=
+                        {
+                            new Image { Source = "bk_profile.png", Aspect = Aspect.Fill},
+                            Header
+                        }
+                    },
+                    ListViewMenu
+                }
+            };
 
-            Contenido.Children.Add(new BoxView { BackgroundColor = Color.FromHex("BFBFBF"), Opacity = 0.08 },
-                                   Constraint.RelativeToParent((arg) => { return arg.Width - (App.DisplayScreenHeight / 203); }),
-                                   Constraint.Constant(20),
-                                   Constraint.Constant(App.DisplayScreenWidth / 203),
-                                   Constraint.Constant(App.DisplayScreenHeight)
-                                  );
-
-            Content = Contenido;
-            
             ListViewMenu.SelectedItem = modeloVista.Menus[0];
             ListViewMenu.ItemSelected += ListViewMenu_ItemSelected;                                                            
         }

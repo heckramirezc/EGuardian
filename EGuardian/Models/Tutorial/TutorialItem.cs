@@ -10,8 +10,6 @@ namespace EGuardian.Models.Tutorial
         public int index { get; set; }
         public ImageSource imagen { get; set; }
         public string texto { get; set; }
-        public double WidthRequest { get; set; }
         public Thickness Padding { get; set; }
-        public double Spacing { get; set; }
     }
 }

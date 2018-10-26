@@ -15,6 +15,8 @@ namespace EGuardian.ViewModels.Tutorial
             {
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalTextAlignment = TextAlignment.Center,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
                 TextColor = Color.White,
                 FontSize = 18,
                 FontFamily = Device.OnPlatform("OpenSans", "OpenSans-Regular", null)
@@ -22,29 +24,28 @@ namespace EGuardian.ViewModels.Tutorial
 
             Image image = new Image
             {
-                HorizontalOptions = LayoutOptions.CenterAndExpand
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                Aspect = Aspect.AspectFill
             };
 
             texto.SetBinding(Label.TextProperty, "texto");
             image.SetBinding(Image.SourceProperty, "imagen");
-            image.SetBinding(Image.WidthRequestProperty, "WidthRequest");
             StackLayout Contenido = new StackLayout
             {
-                WidthRequest = 275,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                Children = { image, texto }
+                Children = {texto }
             };
 
             Contenido.SetBinding(StackLayout.PaddingProperty, "Padding");
-            Contenido.SetBinding(StackLayout.SpacingProperty, "Spacing");
-            Content = new StackLayout
+            Content = new Grid
             {
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                Spacing = 0,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
                 Children =
                 {
+                    image,
                     Contenido
                 }
             };

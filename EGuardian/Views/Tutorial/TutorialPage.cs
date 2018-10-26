@@ -13,59 +13,52 @@ namespace EGuardian.Views.Tutorial
     {
         CarouselViewControl tutorialCarousel;
         List<TutorialItem> contenidoCarousel;
+        Button comenzar;
         StackLayout Indicator1, Indicator2, Indicator3, Indicator4;
         Grid indicadores;
 
         public TutorialPage()
         {
-            BackgroundImage = "tutorial_bk";
+            BackgroundColor = Color.FromHex("312851");
             contenidoCarousel = new List<TutorialItem>();
             contenidoCarousel.Add(
                 new TutorialItem
                 {
                     index = 0,
-                    texto = "TutorialItem1",
+                    texto = "EGuardian\r\nControla tu inversión",
                     imagen = "tutorialItem1.png",
-                    WidthRequest = 275,
-                    Padding = new Thickness(0, 100, 0, 0),
-                    Spacing = 50
+                    Padding = new Thickness(0, 50, 0, 0)
                 });
             contenidoCarousel.Add(
                 new TutorialItem
                 {
                     index = 1,
-                    texto = "TutorialItem2",
+                    texto = "¿Tiene idea de lo que hacen\r\nsus empleados?",
                     imagen = "tutorialItem2.png",
-                    WidthRequest = 175,
-                    Padding = new Thickness(0, 50, 0, 0),
-                    Spacing = 25
+                    Padding = 0//new Thickness(0, 350, 0, 0)
                 });
             contenidoCarousel.Add(
                 new TutorialItem
                 {
                     index = 2,
-                    texto = "TutorialItem3",
+                    texto = "¿Está seguro de que su empleado\r\nAprovecha su inversión?",
                     imagen = "tutorialItem3.png",
-                    WidthRequest = 175,
-                    Padding = new Thickness(0, 50, 0, 0),
-                    Spacing = 25
+                    Padding = 0//new Thickness(0, 350, 0, 0)
                 });
             contenidoCarousel.Add(
                 new TutorialItem
                 {
                     index = 3,
-                    texto = "TutorialItem4",
+                    texto = "¡Este al tanto en todo momento!",
                     imagen = "tutorialItem4.png",
-                    WidthRequest = 175,
-                    Padding = new Thickness(0, 50, 0, 0),
-                    Spacing = 25
+                    Padding = 0//new Thickness(0, 350, 0, 0)
                 });
 
             tutorialCarousel = new CarouselViewControl
             {
                 ItemsSource = contenidoCarousel,
                 ItemTemplate = new DataTemplate(typeof(TutorialViewModel)),
-                InterPageSpacing = 10,
+                InterPageSpacing = 0,
                 HeightRequest = 70,
                 Orientation = CarouselViewOrientation.Horizontal,
                 VerticalOptions = LayoutOptions.FillAndExpand,
@@ -186,9 +179,9 @@ namespace EGuardian.Views.Tutorial
             indicadores.Children.Add(Indicator3, 2, 0);
             indicadores.Children.Add(Indicator4, 3, 0);
 
-            Button comenzar = new Button
+            comenzar = new Button
             {
-                Text = "COMENZAR",
+                Text = "SIGUIENTE",
                 AutomationId = "comenzar",
                 WidthRequest = 300,
                 HeightRequest = 50,
@@ -196,7 +189,7 @@ namespace EGuardian.Views.Tutorial
                 FontSize = 20,
                 TextColor = Color.White,
                 HorizontalOptions = LayoutOptions.Center,
-                BackgroundColor = Color.FromHex("f7b819")
+                BackgroundColor = Color.FromHex("F7B819")
             };
             comenzar.Clicked += Comenzar_Clicked;
 
@@ -223,7 +216,10 @@ namespace EGuardian.Views.Tutorial
 
         void Comenzar_Clicked(object sender, EventArgs e)
         {
-            Navigation.PushModalAsync(new LoginPage());
+            if (comenzar.Text.Equals("COMENZAR"))
+                Navigation.PushModalAsync(new LoginPage());
+            else
+                tutorialCarousel.Position = tutorialCarousel.Position + 1;
         }
 
         void defaultIndicators()
@@ -243,18 +239,22 @@ namespace EGuardian.Views.Tutorial
                     case 0:
                         defaultIndicators();
                         ((Image)Indicator1.Children[0]).Source = "indicator";
+                        comenzar.Text = "SIGUIENTE";
                         break;
                     case 1:
                         defaultIndicators();
                         ((Image)Indicator2.Children[0]).Source = "indicator";
+                        comenzar.Text = "SIGUIENTE";
                         break;
                     case 2:
                         defaultIndicators();
                         ((Image)Indicator3.Children[0]).Source = "indicator";
+                        comenzar.Text = "SIGUIENTE";
                         break;
                     case 3:
                         defaultIndicators();
                         ((Image)Indicator4.Children[0]).Source = "indicator";
+                        comenzar.Text = "COMENZAR";
                         break;
                     default:
                         defaultIndicators();
