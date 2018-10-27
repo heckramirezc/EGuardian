@@ -82,7 +82,7 @@ namespace EGuardian.Models.Eventos
 
                 asistentesEvento.Add(new asistentes
                 {
-                    nombre = "José Hernández Gomez",
+                    nombre = "Heck Ramirez C.",
                     puesto = "Área de ventas",
                     rol = "Asistente"
                 });

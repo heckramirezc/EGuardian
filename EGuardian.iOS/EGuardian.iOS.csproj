@@ -455,6 +455,11 @@
     <BundleResource Include="Resources\iAsistentes.png" />
     <BundleResource Include="Resources\iAsistentes%402x.png" />
     <BundleResource Include="Resources\iAsistentes%403x.png" />
+    <BundleResource Include="Resources\iBusqueda.png" />
+    <BundleResource Include="Resources\iBusqueda%402x.png" />
+    <BundleResource Include="Resources\iBusqueda%403x.png" />
+    <BundleResource Include="Resources\iCancelarB%402x.png" />
+    <BundleResource Include="Resources\iCancelarB%403x.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Renderers\" />

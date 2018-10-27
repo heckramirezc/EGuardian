@@ -441,7 +441,7 @@ namespace EGuardian.Views.Eventos.Evento
                 else
                 {
                     editar.Text = "Cancelar";
-                    this.Title = "Edición de cita";
+                    this.Title = "Edición de evento";
                     OcultarModal();
                     idPaciente.IsEnabled = true;
                     asunto.IsEnabled = true;
@@ -477,7 +477,7 @@ namespace EGuardian.Views.Eventos.Evento
             };
             Button eliminar = new Button
             {
-                Text = "Eliminar",
+                Text = "Cancelar evento",
                 BackgroundColor = Color.Transparent,
                 WidthRequest = 130,
                 HeightRequest = 40,
@@ -486,10 +486,10 @@ namespace EGuardian.Views.Eventos.Evento
             eliminar.Clicked += async (sender, e) =>
             {
                 OcultarModal();
-                var accion = await DisplayAlert("", "¿Desea eliminar la cita para " + this.evento.asunto + "?", "Eliminar", "Cancelar");
+                var accion = await DisplayAlert("", "¿Desea cancelar el evento " + this.evento.asunto + "?", "Cancelar evento", "Atras");
                 if (accion)
                 {
-                    await Navigation.PushPopupAsync(new Indicador("Eliminando cita", Color.White));
+                    //await Navigation.PushPopupAsync(new Indicador("Eliminando cita", Color.White));
                     /*Medicloud.Modelos.Citas.Delete peticion = new Medicloud.Modelos.Citas.Delete { calendarID = this.cita.calendarID };
                     await App.ManejadorDatos.DeleteAsync(peticion);
                     MessagingCenter.Send<CitaNueva_EdicionVista>(this, "Eliminar");*/
@@ -560,7 +560,7 @@ namespace EGuardian.Views.Eventos.Evento
 
             asunto = new ExtendedEntry
             {
-                Placeholder = "O INGRESA EL ASUNTO DE LA CITA",
+                Placeholder = "INGRESA EL NOMBRE DEL EVENTO",
                 PlaceholderColor = Color.FromHex("B2B2B2"),
                 TextColor = Color.FromHex("3F3F3F"),
                 HasBorder = false,
@@ -587,7 +587,7 @@ namespace EGuardian.Views.Eventos.Evento
                 HasBorder = false,
                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
                 FontSize = 14,
-                Placeholder = "INGRESE LUGAR DE LA CITA",
+                Placeholder = "INGRESE LUGAR DEL EVENTO",
                 XAlign = TextAlignment.End,
                 Margin = new Thickness(0, 0, 15, 0)
             };
@@ -609,7 +609,7 @@ namespace EGuardian.Views.Eventos.Evento
             diagnostico = new ExtendedEditor
             {
                 Margin = new Thickness(0, 0, 15, 0),
-                Text = "INGRESE ALGUNAS OBSERVACIONES",
+                Text = "SELECCIONE CAPACITADOR",
                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
                 TextColor = Color.FromHex("B2B2B2"),
                 FontSize = 14,
@@ -865,7 +865,7 @@ namespace EGuardian.Views.Eventos.Evento
                                                 },
                                                 new Label
                                                 {
-                                                    Text = "Datos de cita",
+                                                    Text = "Datos de evento",
                                                     TextColor = Color.FromHex("432161"),
                                                     FontFamily = Device.OnPlatform("OpenSans-ExtraBold", "OpenSans-ExtraBold", null),
                                                     FontSize = 18,
@@ -873,7 +873,7 @@ namespace EGuardian.Views.Eventos.Evento
                                                 }
                                             }
                                         },
-                                        new StackLayout
+                                        /*new StackLayout
                                         {
                                             Spacing = 0,
                                             Children =
@@ -911,7 +911,7 @@ namespace EGuardian.Views.Eventos.Evento
                                                     }
                                                 }
                                             }
-                                        },
+                                        },*/
                                         new StackLayout
                                         {
                                             Spacing = 0,
@@ -919,7 +919,7 @@ namespace EGuardian.Views.Eventos.Evento
                                             {
                                                 new Label
                                                 {
-                                                    Text ="ASUNTO:",
+                                                    Text ="NOMBRE DEL EVENTO:*:",
                                                     FontSize = 13,
                                                     TextColor = Color.FromHex("432161"),
                                                     FontAttributes = FontAttributes.Bold,
@@ -960,7 +960,7 @@ namespace EGuardian.Views.Eventos.Evento
                                             {
                                                 new Label
                                                 {
-                                                    Text ="LUGAR / CLÍNICA",
+                                                    Text ="DIRECCIÓN:*",
                                                     FontSize = 13,
                                                     TextColor = Color.FromHex("432161"),
                                                     FontAttributes = FontAttributes.Bold,
@@ -1002,7 +1002,7 @@ namespace EGuardian.Views.Eventos.Evento
                                             {
                                                 new Label
                                                 {
-                                                    Text ="OBSERVACIONES",
+                                                    Text ="CAPACITADOR:*",
                                                     FontSize = 13,
                                                     TextColor = Color.FromHex("432161"),
                                                     FontAttributes = FontAttributes.Bold,
@@ -1039,7 +1039,7 @@ namespace EGuardian.Views.Eventos.Evento
                                 new BoxView { VerticalOptions = LayoutOptions.FillAndExpand, BackgroundColor = Color.FromHex("B3B3B3"), HeightRequest=4},
                             }
                         },
-                        new StackLayout
+                        /*new StackLayout
                         {
                             Spacing = 0,
                             Children =
@@ -1079,7 +1079,7 @@ namespace EGuardian.Views.Eventos.Evento
                                 },
                                 new BoxView { VerticalOptions = LayoutOptions.FillAndExpand, BackgroundColor = Color.FromHex("B3B3B3"), HeightRequest=4},
                             }
-                        }
+                        }*/
                     }
                 }
             };
@@ -1652,6 +1652,120 @@ namespace EGuardian.Views.Eventos.Evento
                         }
                     }, 1, 0);
 
+                StackLayout headerAsistentes = new StackLayout
+                {
+                    Spacing = 10,
+                    Orientation = StackOrientation.Horizontal,
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    Children =
+                                            {
+                                                new IconView
+                                                {
+                                                    Source = Images.Asistentes,
+                                                    WidthRequest = 20,
+                                                    HeightRequest = 25,
+                                                    Foreground = Color.FromHex("432161"),
+                                                    VerticalOptions = LayoutOptions.Center
+                                                },
+                                                new IconView
+                                                {
+                                                    VerticalOptions = LayoutOptions.End,
+                                                    Source = "idropdown.png",
+                                                    WidthRequest = 10,
+                                                    HeightRequest = 10,
+                                                    Foreground=Color.FromHex("432161")
+                                                }
+                                            }
+                };
+                ExtendedEntry BusquedaRapida = new ExtendedEntry
+                {
+                    Placeholder = "Filtrar asistentes",
+                    HasBorder = false,
+                    BackgroundColor = Color.Transparent,
+                    Margin = new Thickness(10, 0),
+                    PlaceholderColor = Color.FromHex("808080"),
+                    FontSize = 14,
+                    TextColor = Color.FromHex("3F3F3F"),
+                    FontFamily = Device.OnPlatform("OpenSans", "OpenSans-Regular", null)
+                };
+
+                Grid AsistentesHeader = new Grid
+                {
+                    IsVisible = false,
+                    Padding = new Thickness(10, 0, 10, 0),
+                    ColumnSpacing = 5,
+                    VerticalOptions = LayoutOptions.CenterAndExpand,
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    RowDefinitions = {
+                    new RowDefinition { Height = new GridLength (1, GridUnitType.Auto) }
+                },
+                    ColumnDefinitions = {
+                    new ColumnDefinition { Width = new GridLength (1, GridUnitType.Star) },
+                    new ColumnDefinition { Width = new GridLength (1, GridUnitType.Auto) },
+                    new ColumnDefinition { Width = new GridLength (1, GridUnitType.Auto) },
+
+                }
+                };
+                AsistentesHeader.Children.Add(
+                new RoundedBoxView.Forms.Plugin.Abstractions.RoundedBoxView
+                {
+                    BackgroundColor = Color.White,//Color.FromHex("E5E5E5"),
+                    CornerRadius = 6,
+                    HeightRequest = 20,
+                    //WidthRequest = 128,
+                }, 0, 0);
+
+                Image cancelar = new Image
+                {
+                    //Foreground = Color.FromHex("F7B819"),
+                    Source = "iCancelarB.png",
+                    HeightRequest = 25,
+                    WidthRequest = 25,
+
+                };
+
+                Image buscar = new Image
+                {
+                    //Foreground = Color.FromHex("F7B819"),
+                    Source = "iBusqueda.png",
+                    HeightRequest = 25,
+                    WidthRequest = 25,
+
+                };
+                AsistentesHeader.Children.Add(BusquedaRapida, 0, 0);
+                AsistentesHeader.Children.Add(cancelar, 1, 0);
+                AsistentesHeader.Children.Add(buscar, 2, 0);
+
+                TapGestureRecognizer tapAsistentes = new TapGestureRecognizer();
+                tapAsistentes.Tapped+= (sender, e) => 
+                {
+                    if (AsistentesHeader.IsVisible)
+                        AsistentesHeader.IsVisible = false;
+                    else
+                        AsistentesHeader.IsVisible = true;
+                };
+                headerAsistentes.GestureRecognizers.Add(tapAsistentes);
+
+                ListView AsistentesListView = new ListView
+                {
+                    BackgroundColor = Color.Transparent,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    //IsScrollEnable = false,
+                    ItemsSource = this.evento.Asistentes,
+                    ItemTemplate = new DataTemplate(typeof(AsistenteDetalleDTViewModel)),
+                    Margin = 0,
+                    RowHeight = 60,//Convert.ToInt32((App.DisplayScreenHeight / 13.533333333333333)),
+                    IsPullToRefreshEnabled = false,
+                    SeparatorVisibility = SeparatorVisibility.None,
+                    SeparatorColor = Color.Transparent,
+                    HasUnevenRows = false,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                };
+                AsistentesListView.ItemSelected+= (sender, e) => 
+                {
+                    DisplayAlert("Asistentes","Se redirigirá a las alertas de "+((asistentes)e.SelectedItem).nombre,"Aceptar");
+                };
+
                 contenidoVisualizacion = new ScrollView
                 {
                     VerticalOptions = LayoutOptions.FillAndExpand,
@@ -1689,7 +1803,7 @@ namespace EGuardian.Views.Eventos.Evento
                                                 },
                                                 new Label
                                                 {
-                                                    Text = "Datos de cita",
+                                                    Text = "Datos de evento",
                                                     TextColor = Color.FromHex("432161"),
                                                     FontFamily = Device.OnPlatform("OpenSans-ExtraBold", "OpenSans-ExtraBold", null),
                                                     FontSize = 18,
@@ -1733,7 +1847,7 @@ namespace EGuardian.Views.Eventos.Evento
                                     Children =
                                     {
                                         new StackLayout
-                                        {
+                                        {                                            
                                             Orientation = StackOrientation.Horizontal,
                                             HorizontalOptions = LayoutOptions.CenterAndExpand,
                                             Children =
@@ -1745,7 +1859,7 @@ namespace EGuardian.Views.Eventos.Evento
                                                     HeightRequest = 20,
                                                     Foreground = Color.FromHex("432161"),
                                                     VerticalOptions = LayoutOptions.Center
-                                                }
+                                                }                                                
                                             }
                                         },
                                         new StackLayout
@@ -1776,31 +1890,9 @@ namespace EGuardian.Views.Eventos.Evento
                                     BackgroundColor = Color.FromHex("E5E5E5"),
                                     Children =
                                     {
-                                        new StackLayout
-                                        {
-                                            Orientation = StackOrientation.Horizontal,
-                                            HorizontalOptions = LayoutOptions.CenterAndExpand,
-                                            Children =
-                                            {
-                                                new IconView
-                                                {
-                                                    Source = Images.Asistentes,
-                                                    WidthRequest = 20,
-                                                    HeightRequest = 25,
-                                                    Foreground = Color.FromHex("432161"),
-                                                    VerticalOptions = LayoutOptions.Center
-                                                }
-                                            }
-                                        },
-                                            new ExtendedListView
-                                            {
-                                                BackgroundColor = Color.Transparent,
-                                                HorizontalOptions = LayoutOptions.FillAndExpand,
-                                                IsScrollEnable = false,
-                                                ItemsSource= this.evento.Asistentes,
-                                                ItemTemplate = new DataTemplate(typeof(AsistenteDetalleDTViewModel)),
-                                                //HasUnevenRows = true,
-                                            }
+                                        headerAsistentes,
+                                        AsistentesHeader,
+                                        AsistentesListView
                                     }
                                 },
                                 new BoxView { VerticalOptions = LayoutOptions.FillAndExpand, BackgroundColor = Color.FromHex("B3B3B3"), HeightRequest=4},
@@ -1833,7 +1925,7 @@ namespace EGuardian.Views.Eventos.Evento
             }
             else
             {
-                Title = "Nueva cita";
+                Title = "Nuevo evento";
                 eCita.Margin = new Thickness(0, 0, 10, 0);
                 eCita.HorizontalOptions = LayoutOptions.End;
                 eCita.Source = Images.Cancelar;
@@ -1945,7 +2037,7 @@ namespace EGuardian.Views.Eventos.Evento
             }
             else
             {
-                this.Title = "Edición de cita";
+                this.Title = "Edición de evento";
                 editar.Text = "Cancelar";
                 idPaciente.IsEnabled = true;
                 asunto.IsEnabled = true;
@@ -2105,14 +2197,14 @@ namespace EGuardian.Views.Eventos.Evento
                 }*/
                 if (String.IsNullOrEmpty(asunto.Text) || asunto.Text.Length < 4)
                 {
-                    await DisplayAlert("", "Por favor, ingrese asunto de cita.", "Aceptar");
+                    await DisplayAlert("", "Por favor, ingrese asunto de evento.", "Aceptar");
                     asunto.PlaceholderTextColor = Color.Red;
                     asunto.TextColor = Color.Red;
                     return;
                 }
                 if (String.IsNullOrEmpty(lugar.Text))
                 {
-                    await DisplayAlert("", "Por favor, ingrese lugar de cita.", "Aceptar");
+                    await DisplayAlert("", "Por favor, ingrese lugar de evento.", "Aceptar");
                     lugar.PlaceholderTextColor = Color.Red;
                     return;
                 }

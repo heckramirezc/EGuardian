@@ -11,9 +11,13 @@ namespace EGuardian.Views.Ajustes
 	{
 		public AjustesPage ()
 		{
-			Content = new StackLayout {
+            Content = new Grid {
 				Children = {
-					new Label { Text = "Welcome to Xamarin.Forms!" }
+                    new Image 
+                    { 
+                        Source = "iDesarrollo.jp",
+                        Aspect = Aspect.AspectFill
+                    }
 				}
 			};
 		}

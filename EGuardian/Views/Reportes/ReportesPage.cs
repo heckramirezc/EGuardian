@@ -11,11 +11,16 @@ namespace EGuardian.Views.Reportes
 	{
 		public ReportesPage ()
 		{
-			Content = new StackLayout {
-				Children = {
-					new Label { Text = "Welcome to Xamarin.Forms!" }
-				}
-			};
-		}
+            Content = new Grid
+            {
+                Children = {
+                    new Image
+                    {
+                        Source = "iDesarrollo.jp",
+                        Aspect = Aspect.AspectFill
+                    }
+                }
+            };
+        }
 	}
 }

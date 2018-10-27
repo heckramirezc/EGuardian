@@ -542,7 +542,7 @@ namespace EGuardian.Views.Eventos
                     ButtonColor = Color.FromHex("F7B819"),
                     BorderColor = Color.FromHex("F7B819"),
                     TextColor = Color.FromHex("F7B819"),
-                    BackgroundColor = Color.FromHex("F7B819")
+                    //BackgroundColor = Color.FromHex("F7B819")
                 };
                 menuFAB.Clicked += MenuFAB_Clicked;
             }

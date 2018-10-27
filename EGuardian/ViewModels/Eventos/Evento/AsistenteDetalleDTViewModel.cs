@@ -5,7 +5,7 @@ using Xamarin.Forms;
 
 namespace EGuardian.ViewModels.Eventos.Evento
 {
-    public class AsistenteDetalleDTViewModel : ExtendedViewCell
+    public class AsistenteDetalleDTViewModel : ViewCell
     {
         public AsistenteDetalleDTViewModel()
         {
@@ -39,7 +39,7 @@ namespace EGuardian.ViewModels.Eventos.Evento
 
             Grid Item = new Grid
             {
-                Padding = new Thickness(5, 10),
+                BackgroundColor = Color.Transparent,
                 ColumnSpacing = 0,
                 RowSpacing = 0,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -49,14 +49,18 @@ namespace EGuardian.ViewModels.Eventos.Evento
                 },
                 ColumnDefinitions = {
                     new ColumnDefinition { Width = new GridLength (1, GridUnitType.Star) },
+                    new ColumnDefinition { Width = new GridLength (1, GridUnitType.Absolute) },
                     new ColumnDefinition { Width = new GridLength (90, GridUnitType.Absolute) },
-                    new ColumnDefinition { Width = new GridLength (60, GridUnitType.Auto) }
+                    new ColumnDefinition { Width = new GridLength (1, GridUnitType.Absolute) },
+                    new ColumnDefinition { Width = new GridLength (40, GridUnitType.Absolute) }
                 }
             };
 
             Item.Children.Add(new StackLayout
             {
+                Padding = new Thickness(5, 10),
                 VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
                 Spacing = 0,
                 Children = 
                 {
@@ -71,7 +75,7 @@ namespace EGuardian.ViewModels.Eventos.Evento
                 {
                     Rol
                 }
-            }, 1, 0);
+            }, 2, 0);
             Item.Children.Add(new IconView
             {
                 HorizontalOptions = LayoutOptions.Center,
@@ -80,9 +84,23 @@ namespace EGuardian.ViewModels.Eventos.Evento
                 Foreground = Color.FromHex("19164B"),
                 WidthRequest = 20,
                 HeightRequest = 20
-            }, 2, 0);
-            View = Item;
-            SelectedBackgroundColor = Color.Transparent;
+            }, 4, 0);
+
+            Item.Children.Add(new BoxView { BackgroundColor = Color.FromHex("C8C8C8"), WidthRequest = 1 },1,0);
+            Item.Children.Add(new BoxView { BackgroundColor = Color.FromHex("C8C8C8"), WidthRequest = 1 }, 3, 0);
+            View = new StackLayout
+            {
+                BackgroundColor= Color.Transparent,
+                Spacing = 0,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Children =
+                {
+                    Item,
+                    new BoxView { BackgroundColor = Color.FromHex("C8C8C8"), HeightRequest = 1.5 },
+                    new BoxView { BackgroundColor = Color.Transparent, HeightRequest = 0 }
+                }
+            };
+            //SelectedBackgroundColor = Color.Transparent;
         }
 
         protected override void OnBindingContextChanged()
