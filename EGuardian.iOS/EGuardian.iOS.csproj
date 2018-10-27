@@ -85,6 +85,7 @@
     <Compile Include="Renderers\FrameViewRenderer.cs" />
     <Compile Include="Renderers\IconViewRenderer.cs" />
     <Compile Include="Services\SQLite_iOS.cs" />
+    <Compile Include="Renderers\ExtendedTimePickerRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
@@ -424,6 +425,36 @@
     <BundleResource Include="Resources\iAlertas.png" />
     <BundleResource Include="Resources\iAlertas%402x.png" />
     <BundleResource Include="Resources\iAlertas%403x.png" />
+    <BundleResource Include="Resources\iAccess.png" />
+    <BundleResource Include="Resources\iAccess%402x.png" />
+    <BundleResource Include="Resources\iAccess%403x.png" />
+    <BundleResource Include="Resources\iAlerts.png" />
+    <BundleResource Include="Resources\iAlerts%402x.png" />
+    <BundleResource Include="Resources\iAlerts%403x.png" />
+    <BundleResource Include="Resources\iFacebook.png" />
+    <BundleResource Include="Resources\iFacebook%402x.png" />
+    <BundleResource Include="Resources\iFacebook%403x.png" />
+    <BundleResource Include="Resources\iNavegador.png" />
+    <BundleResource Include="Resources\iNavegador%402x.png" />
+    <BundleResource Include="Resources\iNavegador%403x.png" />
+    <BundleResource Include="Resources\iSendMail.png" />
+    <BundleResource Include="Resources\iSendMail%402x.png" />
+    <BundleResource Include="Resources\iSendMail%403x.png" />
+    <BundleResource Include="Resources\iSMS.png" />
+    <BundleResource Include="Resources\iSMS%402x.png" />
+    <BundleResource Include="Resources\iSMS%403x.png" />
+    <BundleResource Include="Resources\iTwitter.png" />
+    <BundleResource Include="Resources\iTwitter%402x.png" />
+    <BundleResource Include="Resources\iTwitter%403x.png" />
+    <BundleResource Include="Resources\iWhatsApp.png" />
+    <BundleResource Include="Resources\iWhatsApp%402x.png" />
+    <BundleResource Include="Resources\iWhatsApp%403x.png" />
+    <BundleResource Include="Resources\iYoutube.png" />
+    <BundleResource Include="Resources\iYoutube%402x.png" />
+    <BundleResource Include="Resources\iYoutube%403x.png" />
+    <BundleResource Include="Resources\iAsistentes.png" />
+    <BundleResource Include="Resources\iAsistentes%402x.png" />
+    <BundleResource Include="Resources\iAsistentes%403x.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Renderers\" />

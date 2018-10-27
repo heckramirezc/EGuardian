@@ -1,6 +1,8 @@
 ﻿using System;
 using Xamarin.Forms;
 using SQLite;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace EGuardian.Models.Eventos
 {
@@ -12,6 +14,8 @@ namespace EGuardian.Models.Eventos
         public int idUsuario { get; set; }
         public int calendarID { get; set; }
         public string asunto { get; set; }
+        public string ubicacion { get; set; }
+        public string capacitador { get; set; }
         public int estado { get; set; }
         public string fechaInicio { get; set; }
         public string fechaFin { get; set; }
@@ -41,6 +45,52 @@ namespace EGuardian.Models.Eventos
                 return "EN ESPERA";
             }
         }
+
+        public IEnumerable Asistentes
+        {
+            get
+            {
+                List<asistentes> asistentesEvento = new List<asistentes>();
+
+                asistentesEvento.Add(new asistentes
+                {
+                    nombre ="José Hernández Gomez",
+                    puesto="Área de ventas",
+                    rol="Capacitador"
+                });
+
+                asistentesEvento.Add(new asistentes
+                {
+                    nombre = "José Hernández Gomez",
+                    puesto = "Área de ventas",
+                    rol = "Asistente"
+                });
+
+                asistentesEvento.Add(new asistentes
+                {
+                    nombre = "José Hernández Gomez",
+                    puesto = "Área de ventas",
+                    rol = "Asistente"
+                });
+
+                asistentesEvento.Add(new asistentes
+                {
+                    nombre = "José Hernández Gomez",
+                    puesto = "Área de ventas",
+                    rol = "Asistente"
+                });
+
+                asistentesEvento.Add(new asistentes
+                {
+                    nombre = "José Hernández Gomez",
+                    puesto = "Área de ventas",
+                    rol = "Asistente"
+                });
+
+                return asistentesEvento;
+            }
+        }
+
         private string getHoraTiempoCita(DateTime Fecha)
         {
             var horatiempo = Fecha.ToString(@"tt", globalizacion);

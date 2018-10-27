@@ -10,6 +10,8 @@ using EGuardian.Common.Resources;
 using EGuardian.Data;
 using EGuardian.Models.Eventos;
 using EGuardian.ViewModels.Eventos;
+using EGuardian.Views.Eventos.Evento;
+using EGuardian.Views.Menu;
 using Plugin.Toasts;
 using Refractored.XamForms.PullToRefresh;
 using Rg.Plugins.Popup.Extensions;
@@ -49,23 +51,23 @@ namespace EGuardian.Views.Eventos
             opcionesToolbar.Clicked += OpcionesToolBar_Clicked;
             this.ToolbarItems.Add(opcionesToolbar);
             NavigationPage.SetBackButtonTitle(this, "");
-            /*MessagingCenter.Subscribe<RootPagina>(this, "Unsubscribe", (sender) =>
+            MessagingCenter.Subscribe<MainPage>(this, "Unsubscribe", (sender) =>
             {
                 MessagingCenter.Unsubscribe<DiaView>(this, "selecciono");
-                MessagingCenter.Unsubscribe<CitaNueva_EdicionVista>(this, "Aceptar");
-                MessagingCenter.Unsubscribe<ServicioWeb>(this, "500");
+                MessagingCenter.Unsubscribe<EventoPage>(this, "Aceptar");
+                //MessagingCenter.Unsubscribe<ServicioWeb>(this, "500");
                 MessagingCenter.Unsubscribe<DiaHeader>(this, "selecciono");
-                MessagingCenter.Unsubscribe<ServicioWeb>(this, "145");
+                /*MessagingCenter.Unsubscribe<ServicioWeb>(this, "145");
                 MessagingCenter.Unsubscribe<ServicioWeb>(this, "747");
                 MessagingCenter.Unsubscribe<ServicioWeb>(this, "131");
                 MessagingCenter.Unsubscribe<ServicioWeb>(this, "Logout");
                 MessagingCenter.Unsubscribe<ServicioWeb>(this, "Red");
                 MessagingCenter.Unsubscribe<ServicioWeb>(this, "RespuestaFallida");
-                MessagingCenter.Unsubscribe<ServicioWeb>(this, "Desconocido");
-                MessagingCenter.Unsubscribe<CitaNueva_EdicionVista>(this, "Eliminar");
-                MessagingCenter.Unsubscribe<PacienteNuevo_EdicionVista>(this, "Guardar");
-                MessagingCenter.Unsubscribe<PacienteActionDTModeloVista>(this, "Accion");
-            });*/
+                MessagingCenter.Unsubscribe<ServicioWeb>(this, "Desconocido");*/
+                MessagingCenter.Unsubscribe<EventoPage>(this, "Eliminar");
+                /*MessagingCenter.Unsubscribe<PacienteNuevo_EdicionVista>(this, "Guardar");
+                MessagingCenter.Unsubscribe<PacienteActionDTModeloVista>(this, "Accion");*/
+            });
             /*
             MessagingCenter.Subscribe<PacienteActionDTModeloVista>(this, "Accion", async (sender) =>
                 {
@@ -113,24 +115,25 @@ namespace EGuardian.Views.Eventos
                 });*/
 
 
-            /*MessagingCenter.Subscribe<CitaNueva_EdicionVista>(this, "Aceptar", async (sender) =>
+            MessagingCenter.Subscribe<EventoPage>(this, "Aceptar", async (sender) =>
             {
-                foreach (var cita in sender.NuevaCita)
+                /*foreach (var cita in sender.NuevaCita)
                 {
-                    if (sender.cita.calendarID == 0)
+                    if (sender.evento.calendarID == 0)
                         ShowToast(ToastNotificationType.Success,
-                                  "¡Cita registrada con éxito!", "Registrada con el identificador " + cita.Calendar_ID,
+                                  "¡Cita registrada con éxito!", "Registrada con el identificador " + evento.Calendar_ID,
                                   10);
                     else
                         ShowToast(ToastNotificationType.Success,
-                                  "¡Cita actualizada con éxito!", "Cita actualizada para " + sender.cita.asunto,
+                                  "¡Cita actualizada con éxito!", "Evento actalizado para " + sender.evento.asunto,
                                   10);
                 }
-                await ActualizarCitas();
+                */
+               await ActualizarCitas();
 
             });
 
-            MessagingCenter.Subscribe<ServicioWeb>(this, "500", (sender) =>
+            /*MessagingCenter.Subscribe<ServicioWeb>(this, "500", (sender) =>
             {
                 ShowToast(ToastNotificationType.Warning,
                           "¡Lo lamentamos!", "Presentamos inconvenientes para obtener tus datos, inténtalo luego.",
@@ -218,21 +221,21 @@ namespace EGuardian.Views.Eventos
                 ShowToast(ToastNotificationType.Warning,
                           "¡Algo salió mal!", "Lamentamos los inconvenientes, inténtalo luego.",
                           10);
-            });
+            });*/
 
 
 
 
-            MessagingCenter.Subscribe<CitaNueva_EdicionVista>(this, "Eliminar", async (sender) =>
+            MessagingCenter.Subscribe<EventoPage>(this, "Eliminar", async (sender) =>
             {
                 await Navigation.PopAsync();
                 ShowToast(ToastNotificationType.Success,
-                          "Citas", "La cita para " + sender.cita.asunto + " se ha eliminado correctamente.",
+                          "Citas", "La cita para " + sender.evento.asunto + " se ha eliminado correctamente.",
                           5);
                 await Navigation.PopAllPopupAsync();
                 await ActualizarCitas();
             });
-            MessagingCenter.Subscribe<PacienteNuevo_EdicionVista>(this, "Guardar", async (sender) =>
+            /*MessagingCenter.Subscribe<PacienteNuevo_EdicionVista>(this, "Guardar", async (sender) =>
             {
                 if (sender.menu == MenuTipo.Agenda)
                 {
@@ -562,7 +565,7 @@ namespace EGuardian.Views.Eventos
                 return;
             VistaModelo.IsBusy = true;
             var stack = Navigation.NavigationStack;
-            if (refrescar.IsEnabled && !Constants.PantallaAbierta && refreshView.IsEnabled /*&& (stack[stack.Count - 1].GetType() != typeof(Indicador)) && (stack[stack.Count - 1].GetType() != typeof(PacienteNuevo_EdicionVista)) && (stack[stack.Count - 1].GetType() != typeof(CitaNueva_EdicionVista))*/)
+            if (refrescar.IsEnabled && !Constants.PantallaAbierta && refreshView.IsEnabled /*&& (stack[stack.Count - 1].GetType() != typeof(Indicador)) && (stack[stack.Count - 1].GetType() != typeof(PacienteNuevo_EdicionVista))*/ && (stack[stack.Count - 1].GetType() != typeof(EventoPage)))
             {
                 refreshView.IsEnabled = false;
                 await ActualizarCitas();
@@ -696,7 +699,7 @@ namespace EGuardian.Views.Eventos
         async void Refrescar_Clicked(object sender, EventArgs e)
         {
             var stack = Navigation.NavigationStack;
-            if (refrescar.IsEnabled && !VistaModelo.IsBusy && !Constants.PantallaAbierta && refreshView.IsEnabled && (stack[stack.Count - 1].GetType() != typeof(Indicador)) /*&& (stack[stack.Count - 1].GetType() != typeof(PacienteNuevo_EdicionVista)) && (stack[stack.Count - 1].GetType() != typeof(CitaNueva_EdicionVista))*/)
+            if (refrescar.IsEnabled && !VistaModelo.IsBusy && !Constants.PantallaAbierta && refreshView.IsEnabled && (stack[stack.Count - 1].GetType() != typeof(Indicador)) /*&& (stack[stack.Count - 1].GetType() != typeof(PacienteNuevo_EdicionVista))*/ && (stack[stack.Count - 1].GetType() != typeof(EventoPage)))
             {
                 VistaModelo.IsBusy = true;
                 refreshView.IsEnabled = false;
@@ -890,7 +893,7 @@ namespace EGuardian.Views.Eventos
 
         async void MenuFAB_Clicked(object sender, EventArgs e)
         {
-            await DisplayAlert("Nuevo Evento", "Lanza a Nuevo/Editar Evento", "OK");
+            await Navigation.PushAsync(new EventoPage(DateTime.Now,new eventos()));
         }
 
         /*void Calendar_DateClicked(object sender, DateTimeEventArgs e)

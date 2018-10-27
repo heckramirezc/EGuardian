@@ -29,6 +29,7 @@
     <Folder Include="Models\Eventos\" />
     <Folder Include="Views\Eventos\Evento\" />
     <Folder Include="Helpers\Eventos\" />
+    <Folder Include="ViewModels\Eventos\Evento\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Views\Inicio\InicioPage.cs" />

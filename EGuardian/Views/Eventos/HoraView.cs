@@ -4,6 +4,7 @@ using EGuardian.Common;
 using EGuardian.Data;
 using EGuardian.Models.Eventos;
 using EGuardian.ViewModels.Eventos;
+using EGuardian.Views.Eventos.Evento;
 using Xamarin.Forms;
 
 namespace EGuardian.Views.Eventos
@@ -19,11 +20,11 @@ namespace EGuardian.Views.Eventos
             doubletap.Tapped += (sender, e) =>
             {
                 var stack = Navigation.NavigationStack;
-                if (this.IsEnabled && !Constants.PantallaAbierta && (stack[stack.Count - 1].GetType() != typeof(Indicador)) /*&& (stack[stack.Count - 1].GetType() != typeof(PacienteNuevo_EdicionVista)) && (stack[stack.Count - 1].GetType() != typeof(CitaNueva_EdicionVista))*/)
+                if (this.IsEnabled && !Constants.PantallaAbierta && (stack[stack.Count - 1].GetType() != typeof(Indicador)) /*&& (stack[stack.Count - 1].GetType() != typeof(PacienteNuevo_EdicionVista))*/ && (stack[stack.Count - 1].GetType() != typeof(EventoPage)))
                 {
                     this.IsEnabled = false;
                     Constants.PantallaAbierta = true;
-                    //Navigation.PushAsync(new CitaNueva_EdicionVista(hora, new citas()));
+                    Navigation.PushAsync(new EventoPage(hora, new eventos()));
                     this.IsEnabled = true;
                 }
             };

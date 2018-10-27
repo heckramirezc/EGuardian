@@ -2,6 +2,7 @@
 using EGuardian.Common;
 using EGuardian.Data;
 using EGuardian.Models.Eventos;
+using EGuardian.Views.Eventos.Evento;
 using Rg.Plugins.Popup.Extensions;
 using Xamarin.Forms;
 
@@ -16,7 +17,7 @@ namespace EGuardian.ViewModels.Eventos
             this.evento = evento;
             Grid grid = new Grid
             {
-                Padding = new Thickness(0, 5, 5, 5),
+                Padding = new Thickness(0, 5, 15, 5),
                 RowSpacing = 1,
                 ColumnSpacing = 1,
                 VerticalOptions = LayoutOptions.FillAndExpand,
@@ -40,12 +41,12 @@ namespace EGuardian.ViewModels.Eventos
             tap.Tapped += async (sender, e) =>
             {
                 var stack = Navigation.NavigationStack;
-                if (this.IsEnabled && !Constants.PantallaAbierta && (stack[stack.Count - 1].GetType() != typeof(Indicador)) /*&& (stack[stack.Count - 1].GetType() != typeof(PacienteNuevo_EdicionVista)) && (stack[stack.Count - 1].GetType() != typeof(CitaNueva_EdicionVista))*/)
+                if (this.IsEnabled && !Constants.PantallaAbierta && (stack[stack.Count - 1].GetType() != typeof(Indicador)) /*&& (stack[stack.Count - 1].GetType() != typeof(PacienteNuevo_EdicionVista))*/ && (stack[stack.Count - 1].GetType() != typeof(EventoPage)))
                 {
                     this.IsEnabled = false;
                     Constants.PantallaAbierta = true;
                     await Navigation.PopAllPopupAsync();
-                    //await Navigation.PushAsync(new CitaNueva_EdicionVista(Convert.ToDateTime(cita.fechaInicio), cita));
+                    await Navigation.PushAsync(new EventoPage(Convert.ToDateTime(evento.fechaInicio), evento));
                     this.IsEnabled = true;
                 }
                 else

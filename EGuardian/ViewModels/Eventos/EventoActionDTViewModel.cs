@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using EGuardian.Common;
 using EGuardian.Common.Resources;
 using EGuardian.Controls;
 using EGuardian.Data;
 using EGuardian.Models.Eventos;
+using EGuardian.Views.Eventos.Evento;
 using Xamarin.Forms;
 
 namespace EGuardian.ViewModels.Eventos
@@ -19,7 +21,7 @@ namespace EGuardian.ViewModels.Eventos
                 Foreground = evento.estadoColor,
                 WidthRequest = 25
             };
-            /*MessagingCenter.Subscribe<PacienteNuevo_EdicionVista>(this, "deseleccionar", (sender) =>
+            /*MessagingCenter.Subscribe<EventoPage>(this, "deseleccionar", (sender) =>
             {
                 isSeleccionado = false;
             });*/
@@ -29,7 +31,7 @@ namespace EGuardian.ViewModels.Eventos
                 Foreground = evento.estadoColor,
                 WidthRequest = 20
             };
-            /*TapGestureRecognizer tapCita = new TapGestureRecognizer();
+            TapGestureRecognizer tapCita = new TapGestureRecognizer();
             TapGestureRecognizer tapPaciente = new TapGestureRecognizer();
 
 
@@ -41,11 +43,11 @@ namespace EGuardian.ViewModels.Eventos
                     await Task.Delay(100);
                     vCita.Foreground = evento.estadoColor;
                     var stack = Navigation.NavigationStack;
-                    if (this.IsEnabled && !Constants.PantallaAbierta && (stack[stack.Count - 1].GetType() != typeof(Indicador)) && (stack[stack.Count - 1].GetType() != typeof(PacienteNuevo_EdicionVista)) && (stack[stack.Count - 1].GetType() != typeof(CitaNueva_EdicionVista)))
+                    if (this.IsEnabled && !Constants.PantallaAbierta && (stack[stack.Count - 1].GetType() != typeof(Indicador)) && (stack[stack.Count - 1].GetType() != typeof(EventoPage)) && (stack[stack.Count - 1].GetType() != typeof(EventoPage)))
                     {
                         this.IsEnabled = false;
                         Constants.PantallaAbierta = true;
-                        //await Navigation.PushAsync(new CitaNueva_EdicionVista(Convert.ToDateTime(cita.fechaInicio), cita));
+                        await Navigation.PushAsync(new EventoPage(Convert.ToDateTime(evento.fechaInicio), evento));
                         this.IsEnabled = true;
                     }
                     else
@@ -56,7 +58,7 @@ namespace EGuardian.ViewModels.Eventos
                     System.Diagnostics.Debug.WriteLine(er);
                 }
             };
-            tapPaciente.Tapped += async (sender, e) =>
+            /*tapPaciente.Tapped += async (sender, e) =>
             {
                 try
                 {
@@ -64,7 +66,7 @@ namespace EGuardian.ViewModels.Eventos
                     await Task.Delay(100);
                     vPaciente.Foreground = evento.estadoColor;
                     var stack = Navigation.NavigationStack;
-                    if (this.IsEnabled && !Constants.PantallaAbierta /*&& (stack[stack.Count - 1].GetType() != typeof(Indicador)) && (stack[stack.Count - 1].GetType() != typeof(PacienteNuevo_EdicionVista)) && (stack[stack.Count - 1].GetType() != typeof(CitaNueva_EdicionVista))*/ /*&& !isSeleccionado)
+                    if (this.IsEnabled && !Constants.PantallaAbierta && (stack[stack.Count - 1].GetType() != typeof(Indicador)) && (stack[stack.Count - 1].GetType() != typeof(EventoPage)) && (stack[stack.Count - 1].GetType() != typeof(EventoPage)) && !isSeleccionado)
                     {
                         this.IsEnabled = false;
                         Constants.PantallaAbierta = true;
@@ -78,11 +80,11 @@ namespace EGuardian.ViewModels.Eventos
                             };
                             await App.ManejadorDatos.SelectByIDAsync(peticion);
                             paciente = App.Database.GetPaciente(Convert.ToInt16(cita.Paciente.id));
-                            await Navigation.PushAsync(new PacienteNuevo_EdicionVista(paciente, MenuTipo.Agenda));
+                            await Navigation.PushAsync(new EventoPage(paciente, MenuTipo.Agenda));
                         }
                         else
                         {
-                            await Navigation.PushAsync(new PacienteNuevo_EdicionVista(new pacientes(), MenuTipo.Agenda));
+                            await Navigation.PushAsync(new EventoPage(new pacientes(), MenuTipo.Agenda));
                         }
                         this.IsEnabled = true;
                     }
@@ -94,10 +96,10 @@ namespace EGuardian.ViewModels.Eventos
                 {
                     System.Diagnostics.Debug.WriteLine(er);
                 }
-            };
+            };*/
 
             vCita.GestureRecognizers.Add(tapCita);
-            vPaciente.GestureRecognizers.Add(tapPaciente);*/
+            //vPaciente.GestureRecognizers.Add(tapPaciente);
 
             Grid grid = new Grid
             {

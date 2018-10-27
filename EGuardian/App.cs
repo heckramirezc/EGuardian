@@ -57,13 +57,15 @@ namespace EGuardian
             {
                 for (int i = 0; i < 3;i++)
                 {
-                    string Asunto = "CAPACITACIÓN" + i;
                     App.Database.InsertEvento(
                        new eventos
                        {
-                        asunto= Asunto,
+                        asunto= "Capacitación #"+i,
                         fechaInicio=DateTime.Now.AddHours(-8+i).ToString(),
-                        fechaFin = DateTime.Now.AddHours(-8 + i).AddMinutes(30+i).ToString()
+                        fechaFin = DateTime.Now.AddHours(-8 + i).AddMinutes(30+i).ToString(),
+                        calendarID = i,
+                        capacitador = "Capacitador #"+i,
+                        ubicacion = "Ubicación #"+i
                        });
                 }
             }
