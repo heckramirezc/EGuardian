@@ -1,13 +1,12 @@
 ﻿using System;
-using EGuardian.Common.Resources;
 using EGuardian.Controls;
 using Xamarin.Forms;
 
 namespace EGuardian.ViewModels.Eventos.Evento
 {
-    public class AsistenteDetalleDTViewModel : ExtendedViewCell
+    public class EventoAsistentesDTViewModel : ExtendedViewCell
     {
-        public AsistenteDetalleDTViewModel()
+        public EventoAsistentesDTViewModel()
         {
             Label Nombre = new Label
             {
@@ -28,19 +27,19 @@ namespace EGuardian.ViewModels.Eventos.Evento
             Label Rol = new Label
             {
                 VerticalTextAlignment = TextAlignment.Center,
-                HorizontalTextAlignment = TextAlignment.Center,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.End,
+                HorizontalTextAlignment = TextAlignment.End,
                 TextColor = Color.FromHex("828282"),
                 FontSize = 12,
                 FontFamily = Device.OnPlatform("OpenSans", "OpenSans-Regular", null)
             };
-            Rol.SetBinding(Label.TextProperty, "rol");
+            Rol.SetBinding(Label.TextProperty, "Rol");
 
             Grid Item = new Grid
             {
                 HeightRequest = 54,
-                Padding = 0,
+                Padding = new Thickness(5, 5, 15, 0),
                 BackgroundColor = Color.Transparent,
                 ColumnSpacing = 0,
                 RowSpacing = 0,
@@ -51,20 +50,16 @@ namespace EGuardian.ViewModels.Eventos.Evento
                 },
                 ColumnDefinitions = {
                     new ColumnDefinition { Width = new GridLength (1, GridUnitType.Star) },
-                    new ColumnDefinition { Width = new GridLength (1, GridUnitType.Absolute) },
-                    new ColumnDefinition { Width = new GridLength (90, GridUnitType.Absolute) },
-                    new ColumnDefinition { Width = new GridLength (1, GridUnitType.Absolute) },
-                    new ColumnDefinition { Width = new GridLength (40, GridUnitType.Absolute) }
+                    new ColumnDefinition { Width = new GridLength (1, GridUnitType.Auto) }
                 }
             };
 
             Item.Children.Add(new StackLayout
             {
-                Padding = new Thickness(5, 10),
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Spacing = 0,
-                Children = 
+                Children =
                 {
                     Nombre,
                     Puesto
@@ -73,31 +68,21 @@ namespace EGuardian.ViewModels.Eventos.Evento
             Item.Children.Add(new Grid
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
                 Children =
                 {
                     Rol
                 }
-            }, 2, 0);
-            Item.Children.Add(new IconView
-            {
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Center,
-                Source=Images.Alerta,
-                Foreground = Color.FromHex("19164B"),
-                WidthRequest = 20,
-                HeightRequest = 20
-            }, 4, 0);
+            }, 1, 0);
 
-            Item.Children.Add(new BoxView { BackgroundColor = Color.FromHex("C8C8C8"), WidthRequest = 1, VerticalOptions = LayoutOptions.FillAndExpand},1,0);
-            Item.Children.Add(new BoxView { BackgroundColor = Color.FromHex("C8C8C8"), WidthRequest = 1, VerticalOptions = LayoutOptions.FillAndExpand }, 3, 0);
             View = new StackLayout
             {
                 HeightRequest = 55,
                 Padding = 0,
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor= Color.Transparent,
-                Spacing = 0,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
+                BackgroundColor = Color.Transparent,
+                Spacing = 0,
                 Children =
                 {
                     Item,

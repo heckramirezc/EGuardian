@@ -27,7 +27,7 @@ namespace EGuardian.ViewModels.Eventos
             });*/
             IconView vPaciente = new IconView
             {
-                Source = Images.Paciente,
+                Source = Images.Alerta,
                 Foreground = evento.estadoColor,
                 WidthRequest = 20
             };

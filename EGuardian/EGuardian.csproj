@@ -30,6 +30,10 @@
     <Folder Include="Views\Eventos\Evento\" />
     <Folder Include="Helpers\Eventos\" />
     <Folder Include="ViewModels\Eventos\Evento\" />
+    <Folder Include="Views\Eventos\Asistentes\" />
+    <Folder Include="ViewModels\Perfil\" />
+    <Folder Include="ViewModels\Incidencias\" />
+    <Folder Include="Models\Incidencias\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Views\Inicio\InicioPage.cs" />
