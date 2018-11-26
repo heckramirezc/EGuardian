@@ -1,7 +1,9 @@
 ﻿using EGuardian.Common.Resources;
 using EGuardian.Controls;
 using EGuardian.Data;
+using EGuardian.Helpers;
 using EGuardian.ViewModels.Menu;
+using EGuardian.Views.Acceso;
 using Rg.Plugins.Popup.Extensions;
 using System;
 using System.Collections.Generic;
@@ -15,6 +17,7 @@ namespace EGuardian.Views.Menu
     {
         public ExtendedListView ListViewMenu { get; private set; }
         public MenuVistaModelo modeloVista;
+        Label nombreEmpresa;
 
         MainPage RootPage { get => Application.Current.MainPage as MainPage; }
 
@@ -24,6 +27,36 @@ namespace EGuardian.Views.Menu
             Title = Strings.MenuTitle;
             BindingContext = modeloVista = new MenuVistaModelo();
             BackgroundColor = Colors.MenuBackground;
+
+            MessagingCenter.Subscribe<Views.Menu.MainPage>(this, "noAutenticado", (sender) =>
+            {
+                nombreEmpresa.Text = String.Empty;
+            });
+            MessagingCenter.Subscribe<LoginPage>(this, "Autenticado", (sender) =>
+            {
+                nombreEmpresa.Text = Settings.session_nombreEmpresa;
+            });
+
+            MessagingCenter.Subscribe<Registro>(this, "Autenticado", (sender) =>
+            {
+                nombreEmpresa.Text = Settings.session_nombreEmpresa;
+            });
+
+            MessagingCenter.Subscribe<Forget>(this, "Autenticado", (sender) =>
+            {
+                nombreEmpresa.Text = Settings.session_nombreEmpresa;
+            });
+
+            nombreEmpresa = new Label
+            {           
+                Text = Settings.session_nombreEmpresa,
+                TextColor = Color.White,
+                FontSize = 16,
+                VerticalOptions = LayoutOptions.Center,
+                VerticalTextAlignment = TextAlignment.Center,
+                FontFamily = Device.OnPlatform("OpenSans-ExtraBold", "OpenSans-ExtraBold", null)
+            };
+
 
             ListViewMenu = new ExtendedListView
             {
@@ -63,16 +96,7 @@ namespace EGuardian.Views.Menu
                 VerticalOptions = LayoutOptions.End,
                 HorizontalOptions = LayoutOptions.Start
             }, 0, 0);
-            Header.Children.Add(new Label
-            {
-
-                Text = "Azul naranja",
-                TextColor = Color.White,
-                FontSize = 16,
-                VerticalOptions = LayoutOptions.Center,
-                VerticalTextAlignment = TextAlignment.Center,
-                FontFamily = Device.OnPlatform("OpenSans-ExtraBold", "OpenSans-ExtraBold", null)
-            }, 0, 1);
+            Header.Children.Add(nombreEmpresa, 0, 1);
 
             ListViewMenu.ItemTemplate = new DataTemplate(typeof(MenuDTViewModel));
 

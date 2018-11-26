@@ -46,7 +46,18 @@ namespace EGuardian.ViewModels.Eventos
                     this.IsEnabled = false;
                     Constants.PantallaAbierta = true;
                     await Navigation.PopAllPopupAsync();
-                    await Navigation.PushAsync(new EventoPage(Convert.ToDateTime(evento.fechaInicio), evento));
+                    await Navigation.PushPopupAsync(new Indicador("Obteniendo evento", Color.White));
+                    GetEvento peticion = new GetEvento
+                    {
+                        idEvento = evento.idEvento
+                    };
+                    GetEventoResponse Respuesta = await App.ManejadorDatos.GetEventoAsync(peticion);
+                    Constants.AccionesEvento.Clear();
+                    Constants.AplicacionesEvento.Clear();
+                    Constants.AsistentesEvento.Clear();
+                    Constants.DatosEvento = new RegistrarEvento();
+                    await Navigation.PopAllPopupAsync();
+                    await Navigation.PushAsync(new EventoPage(Convert.ToDateTime(evento.FechaInicio), evento));
                     this.IsEnabled = true;
                 }
                 else

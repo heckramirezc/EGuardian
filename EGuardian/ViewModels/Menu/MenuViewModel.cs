@@ -22,14 +22,14 @@ namespace EGuardian.ViewModels.Menu
                 SeparatorVisibility = true
                 //MenuTipoSiguiente = MenuItemType.Incidencias
             });
-            Menus.Add(new MenuItem
+            /*Menus.Add(new MenuItem
             {
                 Title = Strings.Menu2,
                 Icon = "iIncidencias.png",
                 Id = MenuItemType.Incidencias,
                 SeparatorVisibility = true
                 //MenuTipoSiguiente = MenuItemType.Perfil
-            });
+            });*/
             Menus.Add(new MenuItem
             {
                 Title = Strings.Menu3,
@@ -38,14 +38,14 @@ namespace EGuardian.ViewModels.Menu
                 Id = MenuItemType.Perfil,
                 //MenuTipoSiguiente = MenuItemType.Reportes
             });
-            Menus.Add(new MenuItem
+            /*Menus.Add(new MenuItem
             {
                 Title = Strings.Menu4,
                 Icon = "iReportes.png",
                 SeparatorVisibility = true,
                 Id = MenuItemType.Reportes,
                 //MenuTipoSiguiente = MenuItemType.API
-            });
+            });*/
             Menus.Add(new MenuItem
             {
                 Title = Strings.Menu5,

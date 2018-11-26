@@ -1,8 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using EGuardian.Common.Resources;
 using EGuardian.Controls;
-using EGuardian.Models.Eventos;
+using EGuardian.Data;
+using EGuardian.Models.Acciones;
+using EGuardian.Models.Aplicaciones;
+using EGuardian.Models.Empleados;
+using EGuardian.Views.Eventos.Acciones;
+using EGuardian.Views.Eventos.Aplicaciones;
 using EGuardian.Views.Eventos.Asistentes;
 using SuaveControls.Views;
 using Xamarin.Forms;
@@ -12,13 +19,19 @@ namespace EGuardian.ViewModels.Eventos.Evento
     public class EventoDatosViewModel : ContentView
     {
         Image AddApp, AddAction;
+        DateTimeControl fechaInicio, fechaFin;
         CultureInfo globalizacion;
         ScrollView contenidoCreacionEdicion;
         ExtendedEntry asunto, lugar, idPaciente;
         bool idPacienteFocused;
         ExtendedDatePicker fecha;
         ExtendedTimePicker horaInicio, horaFin;
-        DateTime hInicio;
+        DateTime hInicio = DateTime.Now;
+
+        Grid Apps, Actions;
+        ColumnDefinitionCollection AppsColumns = new ColumnDefinitionCollection();
+        ColumnDefinitionCollection ActionsColumns = new ColumnDefinitionCollection();
+
         public EventoDatosViewModel()
         {
             idPaciente = new ExtendedEntry
@@ -67,13 +80,89 @@ namespace EGuardian.ViewModels.Eventos.Evento
             MessagingCenter.Subscribe<AsistentesFiltradoPage>(this, "OK", (sender) =>
             {
                 idPacienteFocused = false;
-                asistentes asistente = (asistentes)sender.Pacientes.SelectedItem;
+                empleados asistente = (empleados)sender.Pacientes.SelectedItem;
                 idPaciente.Text = asistente.nombre;
                 //asunto.Text = asistente.nombrePila;
                 idPaciente.TextColor = Color.FromHex("3F3F3F");
                 idPaciente.PlaceholderTextColor = Color.FromHex("B2B2B2");
                 idPaciente.Unfocus();
                 System.Diagnostics.Debug.WriteLine(idPacienteFocused);
+                Constants.DatosEvento.idcapacitador = asistente.idEmpleado;
+                foreach (var asis in Constants.AsistentesEvento)
+                {
+                    asis.rol = "Asistente";
+                }
+                if (Constants.AsistentesEvento.Any((asistent) => asistent.nombre.Equals(((empleados)sender.Pacientes.SelectedItem).nombre)))
+                {
+                    System.Diagnostics.Debug.WriteLine("Asistente ya esta en la lista");
+                    Constants.AsistentesEvento.Remove((empleados)sender.Pacientes.SelectedItem); 
+                }
+                ((empleados)sender.Pacientes.SelectedItem).rol = "Capacitador";
+                Constants.AsistentesEvento.Add((empleados)sender.Pacientes.SelectedItem);
+                MessagingCenter.Send<EventoDatosViewModel>(this, "OK_B");
+            });
+
+            MessagingCenter.Subscribe<AccionesFiltradoPage>(this, "OK", (sender) =>
+            {
+                if(Constants.AccionesEvento.Any((action) => action.idAccion== ((acciones)sender.AccionesContenido.SelectedItem).idAccion))
+                    System.Diagnostics.Debug.WriteLine("Action ya esta en la lista");
+                else
+                {
+                    Constants.AccionesEvento.Add((acciones)sender.AccionesContenido.SelectedItem);
+                    ActionsColumns.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+                }
+                int cnt = 0;
+                Actions.Children.Clear();
+                foreach(var accion in Constants.AccionesEvento)
+                {
+                    Actions.Children.Add(new Grid
+                    {
+                        WidthRequest = 25,
+                        HeightRequest = 25,
+                        Children =
+                        {
+                            new Image
+                            {
+                                Source = accion.icono,
+                                Aspect = Aspect.AspectFit
+                            }
+                        }
+                    }, cnt, 0);
+                    cnt++;
+                    System.Diagnostics.Debug.WriteLine(accion.Nombre);
+                }
+            });
+
+            MessagingCenter.Subscribe<AplicacionesFiltradoPage>(this, "OK", (sender) =>
+            {
+                if (Constants.AplicacionesEvento.Any((app) => app.idAplicacion == ((aplicaciones)sender.AplicacionesContenido.SelectedItem).idAplicacion))
+                    System.Diagnostics.Debug.WriteLine("App ya esta en la lista");
+                else
+                {
+                    Constants.AplicacionesEvento.Add((aplicaciones)sender.AplicacionesContenido.SelectedItem);
+                    AppsColumns.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+                }
+
+                int cnt = 0;
+                Apps.Children.Clear();
+                foreach (var aplicacion in Constants.AplicacionesEvento)
+                {
+                    Apps.Children.Add(new Grid
+                    {
+                        WidthRequest = 25,
+                        HeightRequest = 25,
+                        Children =
+                        {
+                            new Image
+                            {
+                                Source = aplicacion.icono,
+                                Aspect = Aspect.AspectFit
+                            }
+                        }
+                    }, cnt, 0);
+                    cnt++;
+                    System.Diagnostics.Debug.WriteLine(aplicacion.Nombre);
+                }
             });
 
             idPacienteFocused = false;
@@ -115,6 +204,10 @@ namespace EGuardian.ViewModels.Eventos.Evento
                 HeightRequest = 32,
             };
 
+            TapGestureRecognizer AddAppTAP = new TapGestureRecognizer();
+            AddAppTAP.Tapped+= AddAppTAP_Tapped;
+            AddApp.GestureRecognizers.Add(AddAppTAP);
+
             AddAction = new Image
             {
                 Source = "iFABPb",
@@ -122,6 +215,10 @@ namespace EGuardian.ViewModels.Eventos.Evento
                 WidthRequest = 32,
                 HeightRequest = 32,
             };
+
+            TapGestureRecognizer AddActionTAP = new TapGestureRecognizer();
+            AddActionTAP.Tapped += AddActionTAP_Tapped;;
+            AddAction.GestureRecognizers.Add(AddActionTAP);
 
             asunto = new ExtendedEntry
             {
@@ -143,6 +240,10 @@ namespace EGuardian.ViewModels.Eventos.Evento
                     ((ExtendedEntry)sender).TextColor = Color.Red;
                 else
                     ((ExtendedEntry)sender).TextColor = Color.FromHex("3F3F3F");
+            };
+            asunto.Unfocused+= (sender, e) => 
+            {
+                Constants.DatosEvento.nombre = asunto.Text.Trim();
             };
             lugar = new ExtendedEntry
             {
@@ -196,6 +297,13 @@ namespace EGuardian.ViewModels.Eventos.Evento
                     }
                 }
             };
+            fechaInicio = new DateTimeControl(fecha, horaInicio);//2018-11-24T00:17:06.242Z
+            Constants.DatosEvento.fechaInicio = fechaInicio.Value.ToString(@"yyyy-MM-ddTHH:mm:ss.fffZ");
+            horaInicio.Unfocused+= (sender, e) => 
+            {
+                fechaInicio = new DateTimeControl(fecha, horaInicio);
+                Constants.DatosEvento.fechaInicio = fechaInicio.Value.ToString(@"yyyy-MM-ddTHH:mm:ss.fffZ");
+            };
             horaFin = new ExtendedTimePicker
             {
                 HasBorder = false,
@@ -206,6 +314,13 @@ namespace EGuardian.ViewModels.Eventos.Evento
                 TextColor = Color.FromHex("3F3F3F"),
                 Font = Device.OnPlatform<Font>(Font.OfSize("OpenSans-Bold", 14), Font.OfSize("OpenSans-Bold", 14), Font.Default)
 
+            };
+            fechaFin = new DateTimeControl(fecha, horaFin);
+            Constants.DatosEvento.fechaFin = fechaFin.Value.ToString(@"yyyy-MM-ddTHH:mm:ss.fffZ");
+            horaFin.Unfocused+= (sender, e) => 
+            {
+                fechaFin = new DateTimeControl(fecha, horaFin);
+                Constants.DatosEvento.fechaFin = fechaFin.Value.ToString(@"yyyy-MM-ddTHH:mm:ss.fffZ");
             };
             horaFin.PropertyChanged += async (sender, e) =>
             {
@@ -338,7 +453,7 @@ namespace EGuardian.ViewModels.Eventos.Evento
             ActionsHeader.Children.Add(AddAction, 1, 0);
 
 
-            Grid Apps = new Grid
+            Apps = new Grid
             {
                 Padding = new Thickness(0,10),
                 VerticalOptions = LayoutOptions.FillAndExpand,
@@ -347,88 +462,10 @@ namespace EGuardian.ViewModels.Eventos.Evento
                 RowDefinitions = {
                         new RowDefinition {  Height = new GridLength (1, GridUnitType.Auto) },
                 },
-                ColumnDefinitions = {
-                        new ColumnDefinition { Width = new GridLength (1, GridUnitType.Auto) },
-                        new ColumnDefinition { Width = new GridLength (1, GridUnitType.Auto) }/*,
-                        new ColumnDefinition { Width = new GridLength (1, GridUnitType.Auto) },
-                        new ColumnDefinition { Width = new GridLength (1, GridUnitType.Auto) },
-                        new ColumnDefinition { Width = new GridLength (1, GridUnitType.Auto) },
-                        new ColumnDefinition { Width = new GridLength (1, GridUnitType.Auto) }*/
-                    }
+                ColumnDefinitions = AppsColumns
             };
-            Apps.Children.Add(new Grid
-            {
-                WidthRequest = 25,
-                HeightRequest = 25,
-                Children =
-                    {
-                        new Image
-                        {
-                            Source = Images.WhatsApp,
-                            Aspect = Aspect.AspectFit
-                        }
-                    }
-            }, 0, 0);
-            Apps.Children.Add(new Grid
-            {
-                WidthRequest = 25,
-                HeightRequest = 25,
-                Children =
-                    {
-                        new Image
-                        {
-                            Source = Images.Twitter,
-                            Aspect = Aspect.AspectFit
-                        }
-                    }
-            }, 1, 0);
 
-            /*Apps.Children.Add(new Grid
-            {
-                WidthRequest = 25,
-                HeightRequest = 25,
-                Children =
-                    {
-                        new Image
-                        {
-                            Source = Images.Facebook,
-                            Aspect = Aspect.AspectFit
-                        }
-                    }
-            }, 2, 0);
-
-            Apps.Children.Add(new Grid
-            {
-                WidthRequest = 25,
-                HeightRequest = 25,
-                Children =
-                    {
-                        new Image
-                        {
-                            Source = Images.Youtube,
-                            Aspect = Aspect.AspectFit
-                        }
-                    }
-            }, 3, 0);
-
-            Apps.Children.Add(new Grid
-            {
-                WidthRequest = 25,
-                HeightRequest = 25,
-                Children =
-                    {
-                        new Image
-                        {
-                            Source = Images.Navegador,
-                            Aspect = Aspect.AspectFit
-                        }
-                    }
-            }, 4, 0);*/
-
-
-
-
-            Grid Actions = new Grid
+            Actions = new Grid
             {
                 Padding = new Thickness(0, 10),
                 VerticalOptions = LayoutOptions.FillAndExpand,
@@ -437,54 +474,8 @@ namespace EGuardian.ViewModels.Eventos.Evento
                 RowDefinitions = {
                         new RowDefinition {  Height = new GridLength (1, GridUnitType.Auto) },
                 },
-                ColumnDefinitions = {
-                        new ColumnDefinition { Width = new GridLength (1, GridUnitType.Auto) }/*,
-                        new ColumnDefinition { Width = new GridLength (1, GridUnitType.Auto) },
-                        new ColumnDefinition { Width = new GridLength (1, GridUnitType.Auto) }*/
-                    }
+                ColumnDefinitions = ActionsColumns
             };
-            /*Actions.Children.Add(new Grid
-            {
-                WidthRequest = 25,
-                HeightRequest = 25,
-                Children =
-                    {
-                        new Image
-                        {
-                            Source = Images.Apagar,
-                            Aspect = Aspect.AspectFit
-                        }
-                    }
-            }, 0, 0);*/
-            Actions.Children.Add(new Grid
-            {
-                WidthRequest = 25,
-                HeightRequest = 25,
-                Children =
-                    {
-                        new Image
-                        {
-                            Source = Images.Correo,
-                            Aspect = Aspect.AspectFit
-                        }
-                    }
-            }, 0, 0);
-
-            /*Actions.Children.Add(new Grid
-            {
-                WidthRequest = 25,
-                HeightRequest = 25,
-                Children =
-                    {
-                        new Image
-                        {
-                            Source = Images.SMS,
-                            Aspect = Aspect.AspectFit
-                        }
-                    }
-            }, 2, 0);*/
-
-
 
             RelativeLayout componenteInicio = new RelativeLayout();
             componenteInicio.Children.Add(
@@ -840,7 +831,7 @@ namespace EGuardian.ViewModels.Eventos.Evento
             if (!idPacienteFocused)
             {
                 idPacienteFocused = true;
-                await Navigation.PushModalAsync(new AsistentesFiltradoPage());
+                await Navigation.PushModalAsync(new AsistentesFiltradoPage(true));
                 idPaciente.Unfocus();
                 idPacienteFocused = false;
                 return;
@@ -853,21 +844,15 @@ namespace EGuardian.ViewModels.Eventos.Evento
 
         }
 
-
-        void ActionsFAB_Clicked(object sender, EventArgs e)
+        async void AddActionTAP_Tapped(object sender, EventArgs e)
         {
-
+            await Navigation.PushModalAsync(new AccionesFiltradoPage());
         }
 
 
-        void AppFAB_Clicked(object sender, EventArgs e)
+        async void AddAppTAP_Tapped(object sender, EventArgs e)
         {
-
-        }
-
-
-        void MenuFAB_Clicked(object sender, EventArgs e)
-        {
+            await Navigation.PushModalAsync(new AplicacionesFiltradoPage());
         }
 
         void Lugar_TextChanged(object sender, TextChangedEventArgs e)

@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using EGuardian.Controls;
-using EGuardian.Models.Eventos;
+using EGuardian.Data;
+using EGuardian.Models.Empleados;
+using EGuardian.Views.Eventos.Asistentes;
 using SuaveControls.Views;
 using Xamarin.Forms;
 
@@ -10,8 +14,31 @@ namespace EGuardian.ViewModels.Eventos.Evento
     {
         FloatingActionButton AddFAB;
         RelativeLayout Contenido;
+        ListView AsistentesListView;
         public EventoAsistentesViewModel()
         {
+
+            MessagingCenter.Subscribe<AsistentesFiltradoPage>(this, "OK_A", (sender) =>
+            {
+                if (Constants.AsistentesEvento.Any((asistente) => asistente.nombre.Equals(((empleados)sender.Pacientes.SelectedItem).nombre)))
+                    System.Diagnostics.Debug.WriteLine("Asistente ya esta en la lista");
+                else
+                {
+                    ((empleados)sender.Pacientes.SelectedItem).rol = "Asistente";
+                    Constants.AsistentesEvento.Add((empleados)sender.Pacientes.SelectedItem);
+                    AsistentesListView.ItemsSource = null;
+                    AsistentesListView.ItemsSource = Constants.AsistentesEvento;
+                }                    
+            });
+
+
+            MessagingCenter.Subscribe<EventoDatosViewModel>(this, "OK_B", (sender) =>
+            {
+                AsistentesListView.ItemsSource = null;
+                AsistentesListView.ItemsSource = Constants.AsistentesEvento;
+            });
+
+
             ExtendedEntry BusquedaRapida = new ExtendedEntry
             {
                 Placeholder = "Buscar",
@@ -72,15 +99,12 @@ namespace EGuardian.ViewModels.Eventos.Evento
             AsistentesHeader.Children.Add(cancelar, 1, 0);
             AsistentesHeader.Children.Add(buscar, 2, 0);
 
-            eventos evento = new eventos();
-
-
-            ListView AsistentesListView = new ListView
+            AsistentesListView = new ListView
             {
                 BackgroundColor = Color.Transparent,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 //IsScrollEnable = false,
-                ItemsSource = evento.Asistentes,
+                ItemsSource = Constants.AsistentesEvento,
                 ItemTemplate = new DataTemplate(typeof(EventoAsistentesDTViewModel)),
                 Margin = 0,
                 RowHeight = 55, //Convert.ToInt32((App.DisplayScreenHeight / 13.533333333333333)),
@@ -161,6 +185,7 @@ namespace EGuardian.ViewModels.Eventos.Evento
 
         void AddFAB_Clicked(object sender, EventArgs e)
         {
+            Navigation.PushModalAsync(new AsistentesFiltradoPage(false));
         }
     }
 }

@@ -1,5 +1,11 @@
-﻿using EGuardian.Common.Resources;
+﻿using EGuardian.Common;
+using EGuardian.Common.Resources;
 using EGuardian.Controls;
+using EGuardian.Helpers;
+using EGuardian.Models.Contrasenia;
+using EGuardian.Models.Empresas;
+using EGuardian.Models.Login;
+using EGuardian.Models.Usuarios;
 using Plugin.Toasts;
 using Rg.Plugins.Popup.Extensions;
 using Rg.Plugins.Popup.Pages;
@@ -15,7 +21,7 @@ namespace EGuardian.Views.Acceso
 {
     public class Forget : PopupPage
     {
-        String PwdReset_ID="1850";
+        String PwdReset_ID;
         public ExtendedEntry Usuario, contrasenia;
         ExtendedEntry codigo, confirmacionContrasenia;
         Button recuperar, continuar, cambiar;
@@ -613,53 +619,36 @@ namespace EGuardian.Views.Acceso
                 confirmacionContrasenia.Focus();
                 return;
             }
-            /* await Navigation.PushPopupAsync(new Indicador("Actualizando contraseña", Color.White));
+             await Navigation.PushPopupAsync(new Indicador("Actualizando contraseña", Color.White));
              try
              {
-                 PwdReset peticion = new PwdReset
-                 {
-                     email = Usuario.Text,
-                     PwdReset_ID = PwdReset_ID,
-                     NewPwd = getContrasenia()
+                ValidarToken peticion = new ValidarToken
+                 {                     
+                    token = PwdReset_ID,
+                    newPassword = getContrasenia()
                  };
 
-                 var Respuesta = await App.ManejadorDatos.PwdResetAsync(peticion);
-                 await Navigation.PopPopupAsync();
-                 foreach (var user in Respuesta)
+                var Respuesta = await App.ManejadorDatos.ValidarTokenAsync(peticion);
+                await Navigation.PopPopupAsync();
+                if (Respuesta == null)
+                {
+                    ShowToast(ToastNotificationType.Error, "Cambio de contraseña", "Ha ocurrido algo inesperado en la actualización de contraseña, inténtalo de nuevo.", 7);
+                    return;
+                }
+                else if (Respuesta.result.Equals("SUCCESS"))
                  {
-                     if (user.Result_Cd.Equals("0") || user.Result_Cd.Equals("OK"))
-                     {
-                         Login(Usuario.Text, getContrasenia());
-                         return;
-                     }
-                     else if (user.Result_Cd.Equals("547"))
-                     {
-                         await DisplayAlert("¡Verifique!", "Ha ocurrido algo inesperado en la actualización de contraseña, inténtalo de nuevo.", "Aceptar");
-                         return;
-                     }
-                     else if (user.Result_Cd.Equals("111"))
-                     {
-                         await DisplayAlert("Cambio de contraseña", "Código de seguridad invalido, inténtalo de nuevo.", "Aceptar");
-                         return;
-                     }
-                     else
-                     {
-                         await DisplayAlert("Cambio de contraseña", user.Result_Msg, "Aceptar");
-                     }
-                 }
-                 if (Respuesta.Count == 0)
-                 {
-                     ShowToast(ToastNotificationType.Error, "Cambio de contraseña", "Ha ocurrido algo inesperado en la actualización de contraseña, inténtalo de nuevo.", 7);
+                     Login(Usuario.Text, getContrasenia());
                      return;
                  }
+                 else
+                 {
+                    await DisplayAlert("Cambio de contraseña", Respuesta.result, "Aceptar");
+                 }                                  
              }
              catch
              {
                  await DisplayAlert("Cambio de contraseña", "¡Ha ocurrido algo inesperado!", "Aceptar");
-             }*/
-            await Navigation.PopAllPopupAsync();
-            ShowToast(ToastNotificationType.Success, "Cambio de contraseña", "Tu cambio de contraseña fue exitoso.", 7);
-            MessagingCenter.Send<Forget>(this, "Forget");
+             }
         }
 
         async void Recuperar_Clicked(object sender, EventArgs e)
@@ -682,62 +671,39 @@ namespace EGuardian.Views.Acceso
                     return;
                 }
             }
-            /*this.IsBusy = true;
+            this.IsBusy = true;
             recuperar.IsEnabled = false;
             recuperar.IsVisible = false;
             gridBotonRecuperar.IsVisible = false;
-            
 
-            PwdForget peticion = new PwdForget
+
+            ResetPassword peticion = new ResetPassword
             {
-                email = Usuario.Text,
-                deviceOS = Constantes.device_OS,
-                deviceLatLang = deviceLatLang
+                email = Usuario.Text
             };
-            List<ContraseniaRespuesta> Respuesta = new List<ContraseniaRespuesta>();
-            Respuesta = await App.ManejadorDatos.PwdForgetAsync(peticion);
-            bool isEmpty = !Respuesta.Any();
-            if (isEmpty)
+
+            var Respuesta = await App.ManejadorDatos.ResetPasswordAsync(peticion);
+            if (Respuesta==null)
             {
                 ShowToast(ToastNotificationType.Error, "Inconvenientes de conexión", "Lo lamentamos, existen inconvenientes en la conexión; intente más tarde.", 7);
                 Usuario.IsEnabled = true;
                 this.IsBusy = false;
             }
+            else if(!Respuesta.result.Equals("SUCCESS"))
+            {
+                ShowToast(ToastNotificationType.Error, "Recuperación de contraseña", "Servicio no disponible, intente más tarde.", 7);
+                Usuario.IsEnabled = true;
+                this.IsBusy = false;
+            }
             else
             {
-                foreach (var respuesta in Respuesta)
-                {
-                    if (!string.IsNullOrEmpty(respuesta.Result_Cd) && respuesta.Result_Cd.Equals("OK") || respuesta.Result_Cd.Equals("0"))
-                    {
-                        this.IsBusy = false;
-                        PwdReset_ID = respuesta.PwdReset_ID;
-                        if (!String.IsNullOrEmpty(PwdReset_ID))
-                        {
-                            envioCodigo.IsVisible = false;
-                            confirmacionCodigo.IsVisible = true;
-                        }
-                        else
-                        {
-                            ShowToast(ToastNotificationType.Error, "Recuperación de contraseña", "Servicio no disponible, intente más tarde.", 7);
-                            await Navigation.PopPopupAsync();
-                        }
-
-
-                    }
-                    else
-                    {
-                        ShowToast(ToastNotificationType.Error, "Recuperación de contraseña", respuesta.Result_Msg, 7);
-                        Usuario.IsEnabled = true;
-                        this.IsBusy = false;
-                    }
-                }
+                PwdReset_ID = Respuesta.token;
+                envioCodigo.IsVisible = false;
+                confirmacionCodigo.IsVisible = true;
             }
             recuperar.IsVisible = true;
             recuperar.IsEnabled = true;
-            gridBotonRecuperar.IsVisible = true;*/
-
-            envioCodigo.IsVisible = false;
-            confirmacionCodigo.IsVisible = true;
+            gridBotonRecuperar.IsVisible = true;
         }
 
         private async void ShowToast(ToastNotificationType type, string titulo, string descripcion, int tiempo)
@@ -788,72 +754,90 @@ namespace EGuardian.Views.Acceso
 
         private async void Login(string email, string password)
         {
-            /* await Navigation.PushPopupAsync(new Indicador("Iniciando sesión", Color.White));
+             await Navigation.PushPopupAsync(new Indicador("Iniciando sesión", Color.White));
 
-             Login peticion = new Login
-             {
-                 email = email,
-                 password = password,
-                 deviceOS = Constantes.device_OS,
-                 deviceLatLang = deviceLatLang
-             };
-             List<UsuarioRespuesta> Session = new List<UsuarioRespuesta>();
-             Session = await App.ManejadorDatos.LoginAsync(peticion);
-             bool isEmpty = !Session.Any();
-             if (isEmpty)
-             {
+            Login peticion = new Login
+            {
+                username = email,
+                password = password
+            };
+            LoginResponse Session = new LoginResponse();
+            Session = await App.ManejadorDatos.LoginAsync(peticion);
+            if (Session == null)
+            {
                  await Navigation.PopAllPopupAsync();
                  ShowToast(ToastNotificationType.Error, "Inconvenientes de conexión", "Tu cambio de contraseña fue exitoso, sin embargo existen inconvenientes en la conexión; intente iniciar sesión más tarde.", 7);
                  MessagingCenter.Send<Forget>(this, "Forget");
                  await Navigation.PopModalAsync();
              }
-             else
-             {
-                 foreach (var session in Session)
-                 {
-                     if (string.IsNullOrEmpty(session.Result_Cd) || session.Result_Cd.Equals("ER"))
-                     {
-                         await Navigation.PopAllPopupAsync();
-                         ShowToast(ToastNotificationType.Warning, "Verifique sus datos de inicio de sesión", session.Result_Msg, 5);
-                         MessagingCenter.Send<Forget>(this, "Forget");
-                         await Navigation.PopModalAsync();
-                     }
-                     else if (string.IsNullOrEmpty(session.Result_Cd) || session.Result_Cd.Equals("OK"))
-                     {
-                         Medicloud.Helpers.Settings.session_Session_Token = session.Session_Token;
-                         Medicloud.Helpers.Settings.session_User_Nm = session.User_Nm;
-                         Medicloud.Helpers.Settings.session_Account_Nm = session.Account_Nm;
-                         Medicloud.Helpers.Settings.session_Ctry_Cd = session.Ctry_Cd;
-                         usuario usuario = App.Database.GetUser(peticion.email);
-                         if (usuario == null)
-                         {
-                             usuario = new usuario();
-                             usuario.email = peticion.email;
-                             Logeado = false;
-                         }
-                         else
-                             Logeado = true;
-                         usuario.fechaUltimoInicio = DateTime.Now.ToString();
-                         usuario.LatLangUltimoInicio = peticion.deviceLatLang;
-                         usuario.User_Nm = Settings.session_User_Nm;
-                         usuario.Account_Nm = Settings.session_Account_Nm;
-                         usuario.Ctry_Cd = Settings.session_Ctry_Cd;
-                         var res = App.Database.InsertUsuario(usuario);
-                         if (!Logeado)
-                             usuario = App.Database.GetUser(peticion.email);
-                         Medicloud.Helpers.Settings.session_idUsuario = usuario.id.ToString();
-                         ShowToast(ToastNotificationType.Success, "¡Genial!", "Tu cambio de contraseña fue exitoso, nos estamos preparando para tu uso.", 7);
-                         MessagingCenter.Send<Forget>(this, "Autenticado");
-                     }
-                     else
-                     {
-                         await Navigation.PopAllPopupAsync();
-                         ShowToast(ToastNotificationType.Error, "Inconvenientes de conexión", "Tu cambio de contraseña fue exitoso, sin embargo existen inconvenientes en la conexión; intente iniciar sesión más tarde.", 7);
-                         MessagingCenter.Send<Forget>(this, "Forget");
-                         await Navigation.PopModalAsync();
-                     }
-                 }
-             }*/
+            else if (string.IsNullOrEmpty(Session.access_token))
+            {
+                await Navigation.PopAllPopupAsync();
+                ShowToast(ToastNotificationType.Error, "Verifique sus datos de inicio de sesión", "A ocurrido algo inesperado en el inicio de sesión", 5);
+                MessagingCenter.Send<Forget>(this, "Forget");
+                await Navigation.PopModalAsync();
+            }
+            else
+            {
+                Settings.session_access_token = Session.access_token;
+                Settings.session_expires_in = Session.expires_in.ToString();
+                Settings.session_username = Session.user.username;
+                Settings.session_authority = Session.user.authorities[0].authority;
+                usuarios usuario = App.Database.GetUser(peticion.username);
+                if (usuario == null)
+                {
+                    usuario = new usuarios
+                    {
+                        email = peticion.username
+                    };
+                    Logeado = false;
+                }
+                else
+                    Logeado = true;
+                usuario.idUsuario = Session.user.id;
+                usuario.fechaUltimoInicio = DateTime.Now.ToString();
+                usuario.username = Settings.session_username;
+                usuario.firstName = Session.user.firstName;
+                usuario.lastName = Session.user.lastName;
+                usuario.phoneNumber = Session.user.phoneNumber;
+                usuario.enabled = Session.user.enabled;
+                usuario.lastPasswordResetDate = Session.user.lastPasswordResetDate;
+                usuario.genero = Session.user.genero;
+                usuario.idPuesto = Session.puesto.idPuesto;
+                usuario.nombrePuesto = Session.puesto.nombre;
+                var res = App.Database.InsertUsuario(usuario);
+                if (!Logeado)
+                    usuario = App.Database.GetUser(peticion.username);
+                Settings.session_idUsuario = usuario.id.ToString();
+
+                empresas empresa = App.Database.GetEmpresa(Session.empresa.id);
+                if (empresa == null)
+                {
+                    empresa = new empresas
+                    {
+                        idEmpresa = Session.empresa.id
+                    };
+                    Logeado = false;
+                }
+                else
+                    Logeado = true;
+
+                empresa.nombre = Session.empresa.nombre;
+                empresa.direccion = Session.empresa.direccion;
+                empresa.numeroColaboradores = Session.empresa.numeroColaboradores;
+                empresa.telefono = Session.empresa.telefono;
+                empresa.logo = Session.empresa.logo;
+                empresa.descripcion = Session.empresa.descripcion;
+                empresa.status = Session.empresa.status;
+                res = App.Database.InsertEmpresa(empresa);
+                if (!Logeado)
+                    empresa = App.Database.GetEmpresa(Session.empresa.id);
+                Settings.session_idEmpresa = empresa.idEmpresa.ToString();
+                Settings.session_nombreEmpresa = empresa.nombre;
+
+                ShowToast(ToastNotificationType.Success, "¡Genial!", "Tu cambio de contraseña fue exitoso, nos estamos preparando para tu uso.", 7);
+                 MessagingCenter.Send<Forget>(this, "Autenticado");                     
+             }
         }
     }
 }

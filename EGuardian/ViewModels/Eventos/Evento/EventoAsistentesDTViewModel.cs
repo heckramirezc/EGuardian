@@ -1,4 +1,5 @@
 ﻿using System;
+using EGuardian.Common.Resources;
 using EGuardian.Controls;
 using Xamarin.Forms;
 
@@ -15,6 +16,7 @@ namespace EGuardian.ViewModels.Eventos.Evento
                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null)
             };
             Nombre.SetBinding(Label.TextProperty, "nombre");
+            Nombre.SetBinding(Label.TextColorProperty, "colorAsistente");
 
             Label Puesto = new Label
             {
@@ -24,9 +26,16 @@ namespace EGuardian.ViewModels.Eventos.Evento
             };
             Puesto.SetBinding(Label.TextProperty, "puesto");
 
+            Label Email = new Label
+            {
+                TextColor = Color.FromHex("828282"),
+                FontSize = 10,
+                FontFamily = Device.OnPlatform("OpenSans", "OpenSans-Regular", null)
+            };
+            Email.SetBinding(Label.TextProperty, "email");
+
             Label Rol = new Label
             {
-                VerticalTextAlignment = TextAlignment.Center,
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.End,
                 HorizontalTextAlignment = TextAlignment.End,
@@ -62,6 +71,7 @@ namespace EGuardian.ViewModels.Eventos.Evento
                 Children =
                 {
                     Nombre,
+                    Email,
                     Puesto
                 }
             }, 0, 0);

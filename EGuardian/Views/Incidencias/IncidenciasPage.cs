@@ -42,6 +42,7 @@ namespace EGuardian.Views.Incidencias
 
         public IncidenciasPage()
         {
+            Title = "Incidencias";
             var opcionesToolBar = new ToolbarItem
             {
                 Icon = "mas.png",
@@ -155,7 +156,7 @@ namespace EGuardian.Views.Incidencias
             BusquedaRapida =
                 new ExtendedEntry
                 {
-                    Placeholder = "Filtrar por paciente",
+                    Placeholder = "Filtrar por empleado",
                     HasBorder = false,
                     BackgroundColor = Color.Transparent,
                     Margin = new Thickness(10, 0),
@@ -215,7 +216,7 @@ namespace EGuardian.Views.Incidencias
                 {
                     FiltradoActionSheet = true;
                     buscar.Source = "iDropdownB.png";
-                    var action = await DisplayActionSheet("Seleccione filtro", "Cancelar", null, "Paciente", "Documento", "Forma de pago", "Referencia", "Monto");
+                    var action = await DisplayActionSheet("Seleccione filtro", "Cancelar", null, "Empleado", "Evento");
                     if (action == null)
                     {
                         buscar.Source = "iDropdownA.png";
@@ -224,36 +225,18 @@ namespace EGuardian.Views.Incidencias
                     }
                     switch (action)
                     {
-                        case "Paciente":
+                        case "Empleado":
                             filtro = "Patient_ID";
                             notificacionFiltrado.IsVisible = true;
-                            notificacionFiltrado.Text = "FILTRANDO POR PACIENTE";
-                            BusquedaRapida.Placeholder = "Filtrar por paciente";
+                            notificacionFiltrado.Text = "FILTRANDO POR EMPLEADO";
+                            BusquedaRapida.Placeholder = "Filtrar por empleado";
                             break;
-                        case "Documento":
+                        case "Evento":
                             notificacionFiltrado.IsVisible = true;
-                            notificacionFiltrado.Text = "FILTRANDO POR DOCUMENTO";
-                            BusquedaRapida.Placeholder = "Filtrar por documento";
+                            notificacionFiltrado.Text = "FILTRANDO POR EVENTO";
+                            BusquedaRapida.Placeholder = "Filtrar por evento";
                             filtro = "DocumentNo";
-                            break;
-                        case "Forma de pago":
-                            notificacionFiltrado.IsVisible = true;
-                            notificacionFiltrado.Text = "FILTRANDO POR FORMA DE PAGO";
-                            BusquedaRapida.Placeholder = "Filtrar por forma de pago";
-                            filtro = "MethOfPay_Cd";
-                            break;
-                        case "Referencia":
-                            notificacionFiltrado.IsVisible = true;
-                            notificacionFiltrado.Text = "FILTRANDO POR REFERENCIA";
-                            BusquedaRapida.Placeholder = "Filtrar por referencia";
-                            filtro = "ReferenceNo";
-                            break;
-                        case "Monto":
-                            notificacionFiltrado.IsVisible = true;
-                            notificacionFiltrado.Text = "FILTRANDO POR MONTO";
-                            BusquedaRapida.Placeholder = "Filtrar por monto";
-                            filtro = "Ammount";
-                            break;
+                            break;                        
                         case "Cancelar":
                             buscar.Source = "iDropdownA.png";
                             FiltradoActionSheet = false;
@@ -322,7 +305,7 @@ namespace EGuardian.Views.Incidencias
                 VerticalOptions = LayoutOptions.CenterAndExpand,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 RowDefinitions = {
-                    new RowDefinition { Height = new GridLength (1, GridUnitType.Auto) }
+                    new RowDefinition { Height = new GridLength (1, GridUnitType.Star) }
                 },
                 ColumnDefinitions = {
                     new ColumnDefinition { Width = new GridLength (1, GridUnitType.Star) }
@@ -332,7 +315,7 @@ namespace EGuardian.Views.Incidencias
             Header.Children.Add(
                 new Image()
                 {
-                    Source = "headerRegistro.png",
+                    Source = "headerIncidencias.png",
                     Aspect = Aspect.AspectFill
                 });
 

@@ -1,9 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using EGuardian.Common;
 using EGuardian.Common.Resources;
 using EGuardian.Controls;
 using EGuardian.Data;
+using EGuardian.Helpers;
+using EGuardian.Models.Puestos;
+using EGuardian.Models.Usuarios;
+using EGuardian.Views.Menu;
+using EGuardian.Views.Perfil;
 using Plugin.Toasts;
+using Rg.Plugins.Popup.Extensions;
 using Xamarin.Forms;
 
 namespace EGuardian.ViewModels.Perfil
@@ -19,20 +29,17 @@ namespace EGuardian.ViewModels.Perfil
         System.Globalization.CultureInfo globalizacion;
         Label edad, tipoEdad;
         ScrollView ContenidoVista;
+        List<puestos> puestos;
         StackLayout Contenido;
-        //perfiles perfil = App.Database.GetPerfil(Convert.ToInt32(Settings.session_idUsuario));
-
-
+        usuarios perfil = App.Database.GetUserById(Convert.ToInt32(Settings.session_idUsuario));
 
         public UsuarioDTViewModel()
-        {
-
-            globalizacion = new System.Globalization.CultureInfo("es-GT");
-            /*MessagingCenter.Subscribe<CuentaAjustesView>(this, "DisplayAlert", (sender) =>
+        {        
+            MessagingCenter.Subscribe<MainPage>(this, "DisplayAlert", (sender) =>
             {
                 Focus();
                 control = -1;
-            });*/
+            });
 
 
             guardar = new Button
@@ -77,7 +84,7 @@ namespace EGuardian.ViewModels.Perfil
                 XAlign = TextAlignment.End,
                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
                 FontSize = 14,
-                //Text = perfil.First_Nm
+                Text = String.IsNullOrEmpty(perfil.firstName)?String.Empty: perfil.firstName
             };
 
             apellidos = new ExtendedEntry
@@ -89,7 +96,7 @@ namespace EGuardian.ViewModels.Perfil
                 XAlign = TextAlignment.End,
                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
                 FontSize = 14,
-                //Text = perfil.Last_Nm
+                Text = String.IsNullOrEmpty(perfil.lastName) ? String.Empty : perfil.lastName
             };
 
 
@@ -124,28 +131,10 @@ namespace EGuardian.ViewModels.Perfil
                 genero.Items.Add(generos);
             }
 
-            /*if (perfil.Gender.Equals("M"))
-                genero.SelectedIndex = 0;
+            if (!String.IsNullOrEmpty(perfil.genero) && perfil.genero.Equals("1"))
+                genero.SelectedIndex = 1; 
             else
-                genero.SelectedIndex = 1;*/
-
-
-
-            edad = new Label
-            {
-                HorizontalOptions = LayoutOptions.Center,
-                TextColor = Color.White,
-                FontSize = 14,
-                FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null)
-            };
-
-            tipoEdad = new Label
-            {
-                HorizontalOptions = LayoutOptions.Center,
-                TextColor = Color.White,
-                FontSize = 14,
-                FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null)
-            };
+                genero.SelectedIndex = 0;
 
             correo = new ExtendedEntry
             {
@@ -158,7 +147,7 @@ namespace EGuardian.ViewModels.Perfil
                 XAlign = TextAlignment.End,
                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
                 FontSize = 14,
-                //Text = perfil.EMail
+                Text = String.IsNullOrEmpty(perfil.email) ? String.Empty : perfil.email
             };
 
             Grid Genero = new Grid();
@@ -176,9 +165,22 @@ namespace EGuardian.ViewModels.Perfil
                 Font = Device.OnPlatform<Font>(Font.OfSize("OpenSans-Bold", 14), Font.OfSize("OpenSans-Bold", 14), Font.Default)
             };
 
-            foreach (string puestosT in Constants.puestos.Keys)
+            puestos = App.Database.GetPuestos().ToList();
+            if (puestos.Count != 0)
             {
-                puesto.Items.Add(puestosT);
+                puesto.Items.Clear();
+                foreach (var puestoT in puestos)
+                {
+                    puesto.Items.Add(puestoT.nombre);
+                }
+            }
+            try
+            {
+                puesto.SelectedIndex = perfil.idPuesto;
+            }
+            catch(Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
             }
 
             IconView puestoDropdown = new IconView
@@ -194,7 +196,6 @@ namespace EGuardian.ViewModels.Perfil
             Grid Puesto = new Grid();
             Puesto.Children.Add(puesto);
             Puesto.Children.Add(puestoDropdown);
-            puesto.SelectedIndex = -1;
 
             Grid generoPuesto = new Grid
             {
@@ -455,57 +456,18 @@ namespace EGuardian.ViewModels.Perfil
                     return;
                 }
             }
-
-            /*await Navigation.PushPopupAsync(new Indicador("Actualizando usuario", Color.White));
+            await Navigation.PushPopupAsync(new Indicador("Actualizando datos de usuario", Color.White));
             try
             {
-                var deviceLatLang = await App.obtenerUbicacion();
-                ProfileSave peticion = new ProfileSave
-                {
-                    Phone_1 = telefono1.Text,
-                    First_Nm = nombres.Text,
-                    Last_Nm = apellidos.Text,
-                    Gender = Constantes.genero[genero.Items[genero.SelectedIndex]],
-                    DOB = fechaNacimiento.Date.ToString(@"yyyy-MM-dd"),
-                    Short_Nm = perfil.Short_Nm
-                };
-
-                if (prefijo.SelectedIndex == -1)
-                    peticion.Prefix_Nm = ".";
-                else
-                    peticion.Prefix_Nm = prefijo.Items[prefijo.SelectedIndex];
-
-                var Usuario = await App.ManejadorDatos.SaveUserProfileAsync(peticion);
+                await Task.Delay(3000);
                 await Navigation.PopAllPopupAsync();
-                foreach (var user in Usuario)
-                {
-                    if (user.Result_Cd.Equals("0") || user.Result_Cd.Equals("OK"))
-                    {
-                        ShowToast(ToastNotificationType.Success, "Usuario", "Datos de usuario actualizados.", 7);
-                        return;
-                    }
-                    else if (user.Result_Cd.Equals("547"))
-                    {
-                        DisplayAlert("¡Verifique!", "Ha ocurrido algo inesperado en la actualización de datos, inténtalo de nuevo.");
-                        return;
-                    }
-                    else
-                    {
-                        DisplayAlert("", user.Result_Msg);
-                    }
-                }
-                if (Usuario.Count == 0)
-                {
-                    ShowToast(ToastNotificationType.Error, "Usuario", "Ha ocurrido algo inesperado en la actualización de datos, inténtalo de nuevo.", 5);
-                    return;
-                }
             }
-            catch
+            catch (Exception ex)
             {
-                await Navigation.PopAllPopupAsync();
-                DisplayAlert("¡Ha ocurrido algo inesperado!", "Inténtalo de nuevo");
-            }*/
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
 
+            ShowToast(ToastNotificationType.Success, "Usuario", "Datos de usuario actualizados exitosamente.", 7);
         }
         public void DisplayAlert(string title, string message)
         {

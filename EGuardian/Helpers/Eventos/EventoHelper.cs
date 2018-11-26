@@ -15,7 +15,7 @@ namespace EGuardian.Helpers.Eventos
 
         static EventoHelper()
         {
-            Eventos = new ObservableCollection<eventos>(App.Database.GetEventos());
+            Eventos = new ObservableCollection<eventos>(App.Database.GetEventos(Convert.ToInt32(Settings.session_idUsuario)));
             var sorted = from evento in Eventos
                          orderby evento.fechaCita
                          group evento by evento.fechaCita into eventoAgrupadas

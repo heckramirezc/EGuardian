@@ -8,20 +8,51 @@ namespace EGuardian.Models.Login
     {
         public string username { get; set; }
         public string password { get; set; }
-        public string parametros { get { return "username=" + username + "&password=" + password; } }
     }
 
     public class LoginResponse
     {
-        public string id { get; set; }
-        public string userId { get; set; }
-        public string customer_id { get; set; }
+        public string access_token { get; set; }
+        public int expires_in { get; set; }
+        public user user { get; set; }
+        public empresa empresa { get; set; }
+        public puesto puesto { get; set; }
+    }
+
+    public class user
+    {
+        public int id { get; set; }
+        public string username { get; set; }
+        public string firstName { get; set; }
+        public string lastName { get; set; }
         public string email { get; set; }
-        public string firstname { get; set; }
-        public string lastname { get; set; }
-        public string gender { get; set; }
-        public string token { get; set; }
-        public string membershipNumber { get; set; }
-        public double currentBalance { get; set; }
+        public string genero { get; set; }
+        public string phoneNumber { get; set; }
+        public bool enabled { get; set; }
+        public string lastPasswordResetDate { get; set; }
+        public List<authorities> authorities { get; set; }
+    }
+
+    public class empresa
+    {
+        public int id { get; set; }
+        public string nombre { get; set; }
+        public string direccion { get; set; }
+        public int numeroColaboradores { get; set; }
+        public string telefono { get; set; }
+        public string logo { get; set; }
+        public string descripcion { get; set; }
+        public int status { get; set; }
+    }
+
+    public class puesto
+    {
+        public int idPuesto { get; set; }
+        public string nombre { get; set; }
+    }
+
+    public class authorities
+    {
+        public string authority { get; set; }
     }
 }

@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using Plugin.Toasts;
 using Xamarin.Forms;
 using EGuardian.Helpers;
+using EGuardian.Models.Login;
+using EGuardian.Models.Usuarios;
+using EGuardian.Models.Empresas;
 
 namespace EGuardian.Views.Acceso
 {
@@ -270,72 +273,90 @@ namespace EGuardian.Views.Acceso
             login.IsEnabled = false;
             login.IsVisible = false;
 
-            /*Login peticion = new Login
+            Login peticion = new Login
             {
-                email = Usuario.Text,
-                password = getContrasenia(),
-                deviceOS = Constantes.device_OS,
-                deviceLatLang = deviceLatLang
+                username = Usuario.Text,
+                password = getContrasenia()
             };
-            List<UsuarioRespuesta> Session = new List<UsuarioRespuesta>();
+            LoginResponse Session = new LoginResponse();
             Session = await App.ManejadorDatos.LoginAsync(peticion);
-            bool isEmpty = !Session.Any();
-            if (isEmpty)
+            if (Session==null)
             {
                 ShowToast(ToastNotificationType.Error, "Inconvenientes de conexión", "Lo lamentamos, existen inconvenientes en la conexión; intente más tarde.", 7);
                 login.IsVisible = true;
                 login.IsEnabled = true;
                 this.IsBusy = false;
             }
+            else if (string.IsNullOrEmpty(Session.access_token))
+            {
+                ShowToast(ToastNotificationType.Error, "Verifique sus datos de inicio de sesión", "A ocurrido algo inesperado en el inicio de sesión", 5);
+                login.IsVisible = true;
+                login.IsEnabled = true;
+                this.IsBusy = false;
+            }
             else
             {
-                foreach (var session in Session)
+                Settings.session_access_token = Session.access_token;
+                Settings.session_expires_in = Session.expires_in.ToString();
+                Settings.session_username = Session.user.username;
+                Settings.session_authority = Session.user.authorities[0].authority;
+                usuarios usuario = App.Database.GetUser(peticion.username);
+                if (usuario == null)
                 {
-                    if (string.IsNullOrEmpty(session.Result_Cd) || session.Result_Cd.Equals("ER"))
+                    usuario = new usuarios
                     {
-                        ShowToast(ToastNotificationType.Error, "Verifique sus datos de inicio de sesión", session.Result_Msg, 5);
-                        login.IsVisible = true;
-                        login.IsEnabled = true;
-                        this.IsBusy = false;
-                    }
-                    else if (string.IsNullOrEmpty(session.Result_Cd) || session.Result_Cd.Equals("OK"))
-                    {
-                        Medicloud.Helpers.Settings.session_Session_Token = session.Session_Token;
-                        Medicloud.Helpers.Settings.session_User_Nm = session.User_Nm;
-                        Medicloud.Helpers.Settings.session_Account_Nm = session.Account_Nm;
-                        Medicloud.Helpers.Settings.session_Ctry_Cd = session.Ctry_Cd;
-                        usuario usuario = App.Database.GetUser(peticion.email);
-                        if (usuario == null)
-                        {
-                            usuario = new usuario();
-                            usuario.email = peticion.email;
-                            Logeado = false;
-                        }
-                        else
-                            Logeado = true;
-                        usuario.fechaUltimoInicio = DateTime.Now.ToString();
-                        usuario.LatLangUltimoInicio = peticion.deviceLatLang;
-                        usuario.User_Nm = Settings.session_User_Nm;
-                        usuario.Account_Nm = Settings.session_Account_Nm;
-                        usuario.Ctry_Cd = Settings.session_Ctry_Cd;
-                        var res = App.Database.InsertUsuario(usuario);
-                        if (!Logeado)
-                            usuario = App.Database.GetUser(peticion.email);
-                        Medicloud.Helpers.Settings.session_idUsuario = usuario.id.ToString();
-                        this.IsBusy = false;
-                        MessagingCenter.Send<InicioSesion>(this, "Autenticado");
-                    }
-                    else
-                    {
-                        ShowToast(ToastNotificationType.Error, "Inconvenientes de conexión", "Lo lamentamos, existen inconvenientes en la conexión; intente más tarde.", 7);
-                        login.IsVisible = true;
-                        login.IsEnabled = true;
-                        this.IsBusy = false;
-                    }
+                        email = peticion.username
+                    };
+                    Logeado = false;
                 }
-            }*/
-            MessagingCenter.Send<LoginPage>(this, "Autenticado");
+                else
+                    Logeado = true;
+                usuario.idUsuario = Session.user.id;
+                usuario.fechaUltimoInicio = DateTime.Now.ToString();
+                usuario.username = Settings.session_username;
+                usuario.firstName = Session.user.firstName;
+                usuario.lastName = Session.user.lastName;
+                usuario.phoneNumber = Session.user.phoneNumber;
+                usuario.enabled = Session.user.enabled;
+                usuario.lastPasswordResetDate = Session.user.lastPasswordResetDate;
+                usuario.genero = Session.user.genero;
+                usuario.idPuesto = Session.puesto.idPuesto;
+                usuario.nombrePuesto = Session.puesto.nombre;
+                var res = App.Database.InsertUsuario(usuario);
+                if (!Logeado)
+                    usuario = App.Database.GetUser(peticion.username);
+                Settings.session_idUsuario = usuario.id.ToString();
+
+                empresas empresa = App.Database.GetEmpresa(Session.empresa.id);
+                if (empresa == null)
+                {
+                    empresa = new empresas
+                    {
+                        idEmpresa = Session.empresa.id
+                    };
+                    Logeado = false;
+                }
+                else
+                    Logeado = true;
+
+                empresa.nombre = Session.empresa.nombre;
+                empresa.direccion = Session.empresa.direccion;
+                empresa.numeroColaboradores = Session.empresa.numeroColaboradores;
+                empresa.telefono = Session.empresa.telefono;
+                empresa.logo = Session.empresa.logo;
+                empresa.descripcion = Session.empresa.descripcion;
+                empresa.status = Session.empresa.status;
+                res = App.Database.InsertEmpresa(empresa);
+                if (!Logeado)
+                    empresa = App.Database.GetEmpresa(Session.empresa.id);
+                Settings.session_idEmpresa = empresa.idEmpresa.ToString();
+                Settings.session_nombreEmpresa = empresa.nombre;
+
+                this.IsBusy = false;
+                MessagingCenter.Send<LoginPage>(this, "Autenticado");
+            }
         }
+
         protected override void OnAppearing()
         {
             base.OnAppearing();

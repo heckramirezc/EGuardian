@@ -3,9 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using EGuardian.Common;
 using EGuardian.Common.Resources;
 using EGuardian.Controls;
 using EGuardian.Data;
+using EGuardian.Helpers;
+using EGuardian.Models.Empresas;
+using EGuardian.Models.Login;
+using EGuardian.Models.Puestos;
+using EGuardian.Models.Registro;
+using EGuardian.Models.SectorNegocio;
+using EGuardian.Models.Usuarios;
 using Plugin.Toasts;
 using Rg.Plugins.Popup.Extensions;
 using Xamarin.Forms;
@@ -25,9 +33,49 @@ namespace EGuardian.Views.Acceso
         Grid botonCerrar;
         StackLayout EdicionCreacion;
         ScrollView contenidoCreacionEdicion;
+        List<puestos> puestos;
+        List<sectores> sectores;
 
         public Registro()
         {
+            try
+            {
+                puestos = App.Database.GetPuestos().ToList();
+                sectores = App.Database.GetSectores().ToList();
+            }
+            catch(Exception ex)
+            {
+                System.Diagnostics.Debug.Write(ex.Message);
+            }
+
+            MessagingCenter.Subscribe<App>(this, "CargaInicialPuestos", (sender) =>
+            {
+                puestos = null;
+                puestos = App.Database.GetPuestos().ToList();
+                if (puestos.Count != 0)
+                {
+                    puesto.Items.Clear();
+                    foreach (var puestoT in puestos)
+                    {
+                        puesto.Items.Add(puestoT.nombre);
+                    }
+                }
+            });
+
+            MessagingCenter.Subscribe<App>(this, "CargaInicialSectores", (sender) =>
+            {
+                sectores = null;
+                sectores = App.Database.GetSectores().ToList();
+                if (sectores.Count != 0)
+                {
+                    sector.Items.Clear();
+                    foreach (var sectorT in sectores)
+                    {
+                        sector.Items.Add(sectorT.nombre);
+                    }
+                }
+            });
+
             nombres = new ExtendedEntry
             {
                 TextColor = Color.FromHex("3F3F3F"),
@@ -216,10 +264,15 @@ namespace EGuardian.Views.Acceso
                 Margin = new Thickness(0, 0, 35, 0),
                 Font = Device.OnPlatform<Font>(Font.OfSize("OpenSans-Bold", 14), Font.OfSize("OpenSans-Bold", 14), Font.Default)
             };
-
-            foreach (string sectoresT in Constants.sectores.Keys)
+            sector.Focused+= Sector_Focused;;
+            sector.Items.Add("Información no disponible");
+            if (sectores.Count!=0)
             {
-                sector.Items.Add(sectoresT);
+                sector.Items.Clear();
+                foreach (var sectorT in sectores)
+                {
+                    sector.Items.Add(sectorT.nombre);
+                }
             }
 
             IconView sectorDropdown = new IconView
@@ -276,11 +329,17 @@ namespace EGuardian.Views.Acceso
                 Margin = new Thickness(0, 0, 35, 0),
                 Font = Device.OnPlatform<Font>(Font.OfSize("OpenSans-Bold", 14), Font.OfSize("OpenSans-Bold", 14), Font.Default)
             };
-
-            foreach (string puestosT in Constants.puestos.Keys)
+            puesto.Items.Add("Información no disponible");
+            if(puestos.Count!=0)
             {
-                puesto.Items.Add(puestosT);
+                puesto.Items.Clear();
+                foreach (var puestosT in puestos)
+                {
+                    puesto.Items.Add(puestosT.nombre);
+                }
             }
+            puesto.Focused+= Puesto_Focused;;
+
 
             IconView puestoDropdown = new IconView
             {
@@ -898,6 +957,31 @@ namespace EGuardian.Views.Acceso
             contraseniaConfirmacion.IsPassword = true;
         }
 
+        void Puesto_Focused(object sender, FocusEventArgs e)
+        {
+            try
+            {
+                if (puestos.Count != 0)
+                    puestos = App.Database.GetPuestos().ToList();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.Write(ex.Message);
+            }
+        }
+
+        void Sector_Focused(object sender, FocusEventArgs e)
+        {
+            try
+            {
+                if (sectores.Count != 0)
+                    sectores = App.Database.GetSectores().ToList();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.Write(ex.Message);
+            }
+        }
 
         private void Back_Clicked(object sender, EventArgs e)
         {
@@ -912,75 +996,89 @@ namespace EGuardian.Views.Acceso
 
         private async void Login(string email, string password)
         {
-            /* await Navigation.PushPopupAsync(new Indicador("Iniciando sesión", Color.White));
-             Login peticion = new Login
-             {
-                 email = email,
-                 password = password,
-                 deviceOS = Constantes.device_OS,
-                 deviceLatLang = deviceLatLang
-             };
-             List<UsuarioRespuesta> Session = new List<UsuarioRespuesta>();
-             Session = await App.ManejadorDatos.LoginAsync(peticion);
-             bool isEmpty = !Session.Any();
-             if (isEmpty)
-             {
-                 await Navigation.PopAllPopupAsync();
-                 ShowToast(ToastNotificationType.Error, "Inconvenientes de conexión", "Tu registro fue exitoso, sin embargo existen inconvenientes en la conexión; intente iniciar sesión más tarde.", 7);
-                 MessagingCenter.Send<Registro>(this, "Registro");
-                 await Navigation.PopModalAsync();
-             }
-             else
-             {
-                 foreach (var session in Session)
-                 {
-                     if (string.IsNullOrEmpty(session.Result_Cd) || session.Result_Cd.Equals("ER"))
-                     {
-                         await Navigation.PopAllPopupAsync();
-                         ShowToast(ToastNotificationType.Warning, "Verifique sus datos de inicio de sesión", session.Result_Msg, 5);
-                         MessagingCenter.Send<Registro>(this, "Registro");
-                         await Navigation.PopModalAsync();
-                     }
-                     else if (string.IsNullOrEmpty(session.Result_Cd) || session.Result_Cd.Equals("OK"))
-                     {
-                         Medicloud.Helpers.Settings.session_Session_Token = session.Session_Token;
-                         Medicloud.Helpers.Settings.session_User_Nm = session.User_Nm;
-                         Medicloud.Helpers.Settings.session_Account_Nm = session.Account_Nm;
-                         Medicloud.Helpers.Settings.session_Ctry_Cd = session.Ctry_Cd;
-                         usuario usuario = App.Database.GetUser(peticion.email);
-                         if (usuario == null)
-                         {
-                             usuario = new usuario();
-                             usuario.email = peticion.email;
-                             Logeado = false;
-                         }
-                         else
-                             Logeado = true;
-                         usuario.fechaUltimoInicio = DateTime.Now.ToString();
-                         usuario.LatLangUltimoInicio = peticion.deviceLatLang;
-                         usuario.User_Nm = Settings.session_User_Nm;
-                         usuario.Account_Nm = Settings.session_Account_Nm;
-                         usuario.Ctry_Cd = Settings.session_Ctry_Cd;
-                         var res = App.Database.InsertUsuario(usuario);
-                         if (!Logeado)
-                             usuario = App.Database.GetUser(peticion.email);
-                         Medicloud.Helpers.Settings.session_idUsuario = usuario.id.ToString();
-                         ShowToast(ToastNotificationType.Success, "¡Bienvenido!", "Tu registro fue exitoso, nos estamos preparando para tu primer uso.", 7);
-                         MessagingCenter.Send<Registro>(this, "Autenticado");
-                     }
-                     else
-                     {
-                         await Navigation.PopAllPopupAsync();
-                         ShowToast(ToastNotificationType.Error, "Inconvenientes de conexión", "Tu registro fue exitoso, sin embargo existen inconvenientes en la conexión; intente iniciar sesión más tarde.", 7);
-                         MessagingCenter.Send<Registro>(this, "Registro");
-                         await Navigation.PopModalAsync();
-                     }
-                 }
+             await Navigation.PushPopupAsync(new Indicador("Iniciando sesión", Color.White));
+            Login peticion = new Login
+            {
+                username = email,
+                password = password
+            };
+            LoginResponse Session = new LoginResponse();
+            Session = await App.ManejadorDatos.LoginAsync(peticion);
+            if (Session == null)
+            {
+                await Navigation.PopAllPopupAsync();
+                ShowToast(ToastNotificationType.Error, "Inconvenientes de conexión", "Tu registro fue exitoso, sin embargo existen inconvenientes en la conexión; intente iniciar sesión más tarde.", 7);
+                MessagingCenter.Send<Registro>(this, "Registro");
+                await Navigation.PopModalAsync();
+            }
+            else if (string.IsNullOrEmpty(Session.access_token))
+            {
+                await Navigation.PopAllPopupAsync();
+                ShowToast(ToastNotificationType.Error, "Registro exitoso", "A ocurrido algo inesperado en el inicio de sesión; intente iniciar sesión más tarde.", 5);
+                MessagingCenter.Send<Registro>(this, "Registro");
+                await Navigation.PopModalAsync();
+            }
+            else
+            {
+                Settings.session_access_token = Session.access_token;
+                Settings.session_expires_in = Session.expires_in.ToString();
+                Settings.session_username = Session.user.username;
+                Settings.session_authority = Session.user.authorities[0].authority;
+                usuarios usuario = App.Database.GetUser(peticion.username);
+                if (usuario == null)
+                {
+                    usuario = new usuarios
+                    {
+                        email = peticion.username
+                    };
+                    Logeado = false;
+                }
+                else
+                    Logeado = true;
+                usuario.idUsuario = Session.user.id;
+                usuario.fechaUltimoInicio = DateTime.Now.ToString();
+                usuario.username = Settings.session_username;
+                usuario.firstName = Session.user.firstName;
+                usuario.lastName = Session.user.lastName;
+                usuario.phoneNumber = Session.user.phoneNumber;
+                usuario.enabled = Session.user.enabled;
+                usuario.lastPasswordResetDate = Session.user.lastPasswordResetDate;
+                usuario.genero = Session.user.genero;
+                usuario.idPuesto = Session.puesto.idPuesto;
+                usuario.nombrePuesto = Session.puesto.nombre;
+                var res = App.Database.InsertUsuario(usuario);
+                if (!Logeado)
+                    usuario = App.Database.GetUser(peticion.username);
+                Settings.session_idUsuario = usuario.id.ToString();
 
-             }*/
+                empresas empresa = App.Database.GetEmpresa(Session.empresa.id);
+                if (empresa == null)
+                {
+                    empresa = new empresas
+                    {
+                        idEmpresa = Session.empresa.id
+                    };
+                    Logeado = false;
+                }
+                else
+                    Logeado = true;
 
-            ShowToast(ToastNotificationType.Success, "¡Bienvenido!", "Tu registro fue exitoso, nos estamos preparando para tu primer uso.", 7);
-            MessagingCenter.Send<Registro>(this, "Autenticado");
+                empresa.nombre = Session.empresa.nombre;
+                empresa.direccion = Session.empresa.direccion;
+                empresa.numeroColaboradores = Session.empresa.numeroColaboradores;
+                empresa.telefono = Session.empresa.telefono;
+                empresa.logo = Session.empresa.logo;
+                empresa.descripcion = Session.empresa.descripcion;
+                empresa.status = Session.empresa.status;
+                res = App.Database.InsertEmpresa(empresa);
+                if (!Logeado)
+                    empresa = App.Database.GetEmpresa(Session.empresa.id);
+                Settings.session_idEmpresa = empresa.idEmpresa.ToString();
+                Settings.session_nombreEmpresa = empresa.nombre;
+
+                ShowToast(ToastNotificationType.Success, "¡Bienvenido!", "Tu registro fue exitoso, nos estamos preparando para tu primer uso.", 7);
+                MessagingCenter.Send<Registro>(this, "Autenticado");
+            }
         }
 
         string getContrasenia()
@@ -1018,12 +1116,12 @@ namespace EGuardian.Views.Acceso
                 apellidos.Focus();
                 return;
             }
-            /*if (genero.SelectedIndex == -1)
+            if (genero.SelectedIndex == -1)
             {
                 await DisplayAlert("", "Por favor, seleccione el género", "Aceptar");
                 genero.Focus();
                 return;
-            }*/
+            }
             if (String.IsNullOrEmpty(correo.Text))
             {
                 await DisplayAlert("", "Por favor, indique su correo electrónico ", "Aceptar");
@@ -1067,73 +1165,45 @@ namespace EGuardian.Views.Acceso
                 contraseniaConfirmacion.Focus();
                 return;
             }
-            /*await Navigation.PushPopupAsync(new Indicador("Creando cuenta", Color.White));
+            await Navigation.PushPopupAsync(new Indicador("Creando cuenta", Color.White));
             try
             {                               
                 Signup peticion = new Signup
                 {
-                    Account_Nm = nombreClinica.Text,
-                    Adr1_Txt = direccion1.Text,
-                    Adr2_Txt = direccion2.Text,
-                    //Adr_Place_ID = lugares[lugar.Items[lugar.SelectedIndex]],
-                    Ctry_Cd = paises[pais.Items[pais.SelectedIndex]],
-                    Phone_1 = telefono1.Text,
-                    Phone_2 = telefono2.Text,
-                    //Prefix_Nm = prefijo.Items[prefijo.SelectedIndex],
-                    First_Nm1 = primerNombre.Text,
-                    First_Nm2 = segundoNombre.Text,
-                    Last_Nm1 = primerApellido.Text,
-                    Last_Nm2 = segundoApellido.Text,
-                    Gender = Constantes.genero[genero.Items[genero.SelectedIndex]],
-                    DOB = fechaNacimiento.Date.ToString(@"yyyy-MM-dd"),
-                    //Specialty_1 = especialidades[especialidad.Items[especialidad.SelectedIndex]],
-                    Email = correo.Text,
-                    Pwd = getContrasenia(),
-                    Device_OS = Constantes.device_OS,
-                    Device_LatLang = deviceLatLang
-                };
+                    nombreEmpresa = nombreEmpresa.Text,
+                    direccionEmpresa = direccion.Text,
+                    nombreUsuario = nombres.Text,
+                    apellidosUsuario = apellidos.Text,
+                    email = correo.Text,
+                    contrasenia = getContrasenia(),
+                    genero = Constants.genero[genero.Items[genero.SelectedIndex]]
+            };
 
-                if (lugar.Equals("Información no disponible") || lugar.SelectedIndex == -1)
-                    peticion.Adr_Place_ID = ".";
+                if (colaboradores.SelectedIndex == -1)
+                    peticion.numeroColaboradoresEmpresa = 0;
                 else
-                    peticion.Adr_Place_ID = lugares[lugar.Items[lugar.SelectedIndex]];
-                if (prefijo.SelectedIndex == -1)
-                    peticion.Prefix_Nm = ".";
-                else
-                    peticion.Prefix_Nm = prefijo.Items[prefijo.SelectedIndex];
-                if (String.IsNullOrEmpty(segundoNombre.Text))
-                    peticion.First_Nm2 = ".";
-                if (String.IsNullOrEmpty(segundoApellido.Text))
-                    peticion.Last_Nm2 = ".";
-                if (String.IsNullOrEmpty(telefono2.Text))
-                    peticion.Phone_2 = ".";
-                if (especialidad.SelectedIndex == -1)
-                    peticion.Specialty_1 = ".";
-                else
-                    peticion.Specialty_1 = especialidades[especialidad.Items[especialidad.SelectedIndex]];
+                    peticion.numeroColaboradoresEmpresa = Constants.colaboradores[colaboradores.Items[colaboradores.SelectedIndex]];
 
-                var Usuario = await App.ManejadorDatos.SignupAsync(peticion);
+                if (sector.SelectedIndex == -1)
+                    peticion.idNegocios = new List<int>{0};
+                else
+                    peticion.idNegocios = new List<int>{sectores.Find(x => (x.nombre == sector.Items[sector.SelectedIndex])).id };
+
+                if (puesto.SelectedIndex == -1)
+                    peticion.puesto = 0;
+                else
+                    peticion.puesto = puestos.Find(x => (x.nombre == puesto.Items[puesto.SelectedIndex])).id;
+                    
+                var response = await App.ManejadorDatos.CrearEmpresaAsync(peticion);
                 await Navigation.PopAllPopupAsync();
-                foreach (var user in Usuario)
+                if (response)
                 {
-                    if (user.Result_Cd.Equals("0") || user.Result_Cd.Equals("OK"))
-                    {
-                        Login(correo.Text, getContrasenia());
-                        return;
-                    }
-                    else if (user.Result_Cd.Equals("547"))
-                    {
-                        await DisplayAlert("¡Verifique!", "Ha ocurrido algo inesperado en tu registro, intentalo de nuevo.", "Aceptar");
-                        return;
-                    }
-                    else
-                    {
-                        await DisplayAlert("", user.Result_Msg, "Aceptar");
-                    }
+                    Login(correo.Text, getContrasenia());
+                    return;
                 }
-                if (Usuario.Count == 0)
+                else
                 {
-                    await DisplayAlert("¡Lo lamentamos!", "Ha ocurrido algo inesperado en tu registro, intentalo de nuevo.", "Aceptar");
+                    await DisplayAlert("¡Verifique!", "Ha ocurrido algo inesperado en tu registro, intentalo de nuevo.", "Aceptar");
                     return;
                 }
             }
@@ -1141,9 +1211,7 @@ namespace EGuardian.Views.Acceso
             {
                 await Navigation.PopAllPopupAsync();
                 await DisplayAlert("¡Ha ocurrido algo inesperado!", "Intentalo de nuevo", "Aceptar");
-            }*/
-
-            Login(correo.Text, getContrasenia());
+            }
         }
 
     }

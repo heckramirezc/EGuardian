@@ -24,6 +24,10 @@ namespace EGuardian.Views.Eventos
                 {
                     this.IsEnabled = false;
                     Constants.PantallaAbierta = true;
+                    Constants.AccionesEvento.Clear();
+                    Constants.AplicacionesEvento.Clear();
+                    Constants.AsistentesEvento.Clear();
+                    Constants.DatosEvento = new RegistrarEvento();
                     Navigation.PushAsync(new EventoPage(hora, new eventos()));
                     this.IsEnabled = true;
                 }
@@ -31,7 +35,7 @@ namespace EGuardian.Views.Eventos
             bool segundo = false;
             foreach (var Evento in evento)
             {
-                if ((Evento.horaInicioCita.StartsWith(hora.ToString(@"hh"))) && (Evento.horaTiempoCita.StartsWith(hora.ToString(@"tt", new System.Globalization.CultureInfo("es-GT")).ToLower())))
+                if ((Evento.Fecha.Date.Equals(hora.Date))&&(Evento.horaInicioCita.StartsWith(hora.ToString(@"hh"))) && (Evento.horaTiempoCita.StartsWith(hora.ToString(@"tt", new System.Globalization.CultureInfo("es-GT")).ToLower())))
                 {
                     if (!segundo)
                     {

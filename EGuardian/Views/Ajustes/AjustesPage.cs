@@ -22,9 +22,10 @@ namespace EGuardian.Views.Ajustes
         {
             headerBackground = new Image()
             {
-                Source = "headerRegistro.png",
+                Source = "headerConfiguracion.png",
                 Aspect = Aspect.AspectFill
             };
+            Title = "Configuraciones";
 
             Contenido = new RelativeLayout();
             Contenido.Children.Add(headerBackground,
@@ -72,16 +73,6 @@ namespace EGuardian.Views.Ajustes
                 VerticalTextAlignment = TextAlignment.Center,
                 HorizontalOptions = LayoutOptions.Center,
             };
-            /*perfiles perfil = App.database.GetPerfil(Convert.ToInt32(Settings.session_idUsuario));
-            if ((perfil != null) || !string.IsNullOrEmpty(perfil.Short_Nm))
-            {
-                if (perfil.Short_Nm.Length <= 3)
-                    username.Text = "(" + perfil.Short_Nm.ToUpper() + ")";
-                else
-                    username.Text = "(" + perfil.Short_Nm.Substring(0, 3).ToUpper() + ")";
-            }
-            else
-                username.Text = "(" + Settings.session_User_Nm.Substring(0, 3).ToUpper() + ")";*/
             cuenta = new Label
             {
                 TextColor = Color.White,
@@ -140,21 +131,21 @@ namespace EGuardian.Views.Ajustes
             TapGestureRecognizer UsuarioTAP = new TapGestureRecognizer();
             TapGestureRecognizer CuentaTAP = new TapGestureRecognizer();
             TapGestureRecognizer ContraseniaTAP = new TapGestureRecognizer();
-            /*UsuarioTAP.Tapped += (sender, e) =>
+            UsuarioTAP.Tapped += (sender, e) =>
             {
                 if (CarouselContenido.Position != 0)
-                    CarouselContenido.SetCurrentPage(0);
+                    CarouselContenido.Position = 0;
             };
             CuentaTAP.Tapped += (sender, e) =>
             {
                 if (CarouselContenido.Position != 1)
-                    CarouselContenido.SetCurrentPage(1);
+                    CarouselContenido.Position = 1;
             };
             ContraseniaTAP.Tapped += (sender, e) =>
             {
                 if (CarouselContenido.Position != 2)
-                    CarouselContenido.SetCurrentPage(2);
-            };*/
+                    CarouselContenido.Position = 2;
+            };
             Usuario.GestureRecognizers.Add(UsuarioTAP);
             Cuenta.GestureRecognizers.Add(CuentaTAP);
             Contrasenia.GestureRecognizers.Add(ContraseniaTAP);
@@ -233,25 +224,6 @@ namespace EGuardian.Views.Ajustes
         protected override void OnAppearing()
         {
             Navigation.PopAllPopupAsync();
-            /*MessagingCenter.Unsubscribe<ContraseniaModeloVista>(this, "DisplayAlert");
-            MessagingCenter.Unsubscribe<CuentaModeloVista>(this, "DisplayAlert");
-            MessagingCenter.Unsubscribe<UsuarioModeloVista>(this, "DisplayAlert");
-
-            MessagingCenter.Subscribe<ContraseniaModeloVista, string[]>(this, "DisplayAlert", async (sender, values) =>
-            {
-                await DisplayAlert(values[0], values[1], "Aceptar");
-                MessagingCenter.Send<CuentaAjustesView>(this, "DisplayAlert");
-            });
-            MessagingCenter.Subscribe<CuentaModeloVista, string[]>(this, "DisplayAlert", async (sender, values) =>
-            {
-                await DisplayAlert(values[0], values[1], "Aceptar");
-                MessagingCenter.Send<CuentaAjustesView>(this, "DisplayAlert");
-            });
-            MessagingCenter.Subscribe<UsuarioModeloVista, string[]>(this, "DisplayAlert", async (sender, values) =>
-            {
-                await DisplayAlert(values[0], values[1], "Aceptar");
-                MessagingCenter.Send<CuentaAjustesView>(this, "DisplayAlert");
-            });*/
         }
     }
 }

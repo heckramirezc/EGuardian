@@ -1,17 +1,21 @@
 ﻿using System;
 
+using Android;
 using Android.App;
+using Android.Widget;
+using Android.OS;
+using Android.Content;
+
 using Android.Content.PM;
 using Android.Runtime;
 using Android.Views;
-using Android.Widget;
-using Android.OS;
 using CarouselView.FormsPlugin.Android;
 using Plugin.Toasts;
 using Xamarin.Forms;
 using RoundedBoxView.Forms.Plugin.Droid;
 using Refractored.XamForms.PullToRefresh.Droid;
 using ImageCircle.Forms.Plugin.Droid;
+using EGuardian.Droid.Services;
 
 namespace EGuardian.Droid
 {    
@@ -36,6 +40,12 @@ namespace EGuardian.Droid
             DependencyService.Register<ToastNotificatorImplementation>();
             ToastNotificatorImplementation.Init(this);
             LoadApplication(new App());
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            App.CloseService();
         }
     }
 }

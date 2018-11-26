@@ -5,8 +5,10 @@ using EGuardian.Common;
 using EGuardian.Common.Resources;
 using EGuardian.Controls;
 using EGuardian.Data;
+using EGuardian.Helpers;
 using EGuardian.Models.Eventos;
 using EGuardian.ViewModels.Eventos.Evento;
+using Plugin.Toasts;
 using Rg.Plugins.Popup.Extensions;
 using Xamarin.Forms;
 
@@ -31,7 +33,7 @@ namespace EGuardian.Views.Eventos.Evento
         //public List<CitaRespuesta> NuevaCita;
         //pacientes paciente = new pacientes();
 
-        bool isContextual;
+        bool isContextual, isAppearing;
         public eventos evento;
         eventos eventoContexto;
         RelativeLayout Contenido;
@@ -44,9 +46,9 @@ namespace EGuardian.Views.Eventos.Evento
             this.hInicio = hInicio;
             this.evento = new eventos
             {
-                capacitador = eventoContexto.capacitador,
+                idUserCreator = eventoContexto.idUserCreator,
                 idUsuario = eventoContexto.idUsuario,
-                calendarID = eventoContexto.calendarID,
+                idEvento = eventoContexto.idEvento,
                 //idPaciente = eventoContexto.idPaciente,
                 asunto = eventoContexto.asunto,
                 ubicacion = eventoContexto.ubicacion,
@@ -627,11 +629,11 @@ namespace EGuardian.Views.Eventos.Evento
                    );
             estado.SelectedIndexChanged += (sender, e) =>
             {
-                evento.estado = estado.SelectedIndex;
+                //evento.estado = estado.SelectedIndex;
                 estadoDropdown.Foreground = evento.estadoColor;
             };
 
-            if (this.evento.calendarID != 0)
+            if (this.evento.idEvento != 0)
             {
                 /*paciente = this.cita.Paciente;
                 if (!string.IsNullOrEmpty(paciente.nombrePila))
@@ -1070,7 +1072,7 @@ namespace EGuardian.Views.Eventos.Evento
                                 },
                                 new Label
                                 {
-                                    Text =Convert.ToDateTime(evento.fechaInicio).ToString(@"dd/MM/yyyy"),
+                                    Text =Convert.ToDateTime(evento.FechaInicio).ToString(@"dd/MM/yyyy"),
                                     FontSize = 13,
                                     FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
                                     HorizontalTextAlignment = TextAlignment.Center,
@@ -1260,7 +1262,7 @@ namespace EGuardian.Views.Eventos.Evento
                 };
                 AsistentesListView.ItemSelected+= (sender, e) => 
                 {
-                    DisplayAlert("Asistentes","Se redirigirá a las alertas de "+((asistentes)e.SelectedItem).nombre,"Aceptar");
+                    DisplayAlert("Asistentes","Se redirigirá a las alertas de "+((asistentes)e.SelectedItem).nombres,"Aceptar");
                 };
 
 
@@ -1275,66 +1277,7 @@ namespace EGuardian.Views.Eventos.Evento
                     {
                         Spacing = 10,
                         Children =
-                    {
-                        /*new StackLayout
-                        {
-                            Spacing = 0,
-                            Children =
-                            {
-                                new StackLayout
-                                {
-                                    Padding = new Thickness(40,15,40,15),
-                                    Spacing = 15,
-                                    BackgroundColor = Color.FromHex("E5E5E5"),
-                                    Children =
-                                    {
-                                        new StackLayout
-                                        {
-                                            Orientation = StackOrientation.Horizontal,
-                                            HorizontalOptions = LayoutOptions.CenterAndExpand,
-                                            Children =
-                                            {
-                                                new IconView
-                                                {
-                                                    Source = "iNCinfo.png",
-                                                    WidthRequest = 15,
-                                                    HeightRequest = 20,
-                                                    Foreground = Color.FromHex("432161"),
-                                                    VerticalOptions = LayoutOptions.Center
-                                                },
-                                                new Label
-                                                {
-                                                    Text = "Datos de evento",
-                                                    TextColor = Color.FromHex("432161"),
-                                                    FontFamily = Device.OnPlatform("OpenSans-ExtraBold", "OpenSans-ExtraBold", null),
-                                                    FontSize = 18,
-                                                    VerticalOptions = LayoutOptions.Center
-                                                }
-                                            }
-                                        },
-                                        new StackLayout
-                                        {
-                                            Spacing = 10,
-                                            Children =
-                                            {
-                                                new Label
-                                                {
-                                                    Text ="ASUNTO:",
-                                                    FontSize = 13,
-                                                    TextColor = Color.FromHex("432161"),
-                                                    FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
-                                                    FontAttributes = FontAttributes.Bold,
-                                                    Margin = new Thickness(15,0)
-                                                },
-                                                new Label {Text =this.evento.asunto, FontSize = 13, FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null), HorizontalTextAlignment = TextAlignment.Center, TextColor = Color.FromHex("3F3F3F")},
-                                                new BoxView {BackgroundColor= Color.FromHex("432161"), HeightRequest=1 },
-                                            }
-                                        }
-                                    }
-                                },
-                                new BoxView { VerticalOptions = LayoutOptions.FillAndExpand, BackgroundColor = Color.FromHex("B3B3B3"), HeightRequest=4},
-                            }
-                        },*/
+                    {                        
                         new StackLayout
                         {
                             Spacing = 0,
@@ -1368,7 +1311,7 @@ namespace EGuardian.Views.Eventos.Evento
                                             //Spacing = 10,
                                             Children =
                                             {
-                                                    new Label {Text =this.evento.ubicacion.ToUpper(), FontSize = 13, FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null), HorizontalTextAlignment = TextAlignment.Center, TextColor = Color.FromHex("3F3F3F")},
+                                                    new Label {Text = !String.IsNullOrEmpty(this.evento.ubicacion)?this.evento.ubicacion.ToUpper():String.Empty, FontSize = 13, FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null), HorizontalTextAlignment = TextAlignment.Center, TextColor = Color.FromHex("3F3F3F")},
                                                 //new BoxView {BackgroundColor= Color.FromHex("432161"), HeightRequest=1 },
                                             }
                                         }
@@ -1437,6 +1380,12 @@ namespace EGuardian.Views.Eventos.Evento
                                         xConstraint: Constraint.Constant(-15),
                                         yConstraint: Constraint.Constant(20)
                    );
+                Contenido.Children.Add(tabs,
+                   xConstraint: Constraint.Constant(0),
+                   yConstraint: Constraint.Constant(90),
+                   widthConstraint: Constraint.RelativeToParent((parent) => { return parent.Width; })//,
+                                                                                                     //heightConstraint: Constraint.Constant(30)
+               );
                 Contenido.Children.Add(EdicionCreacion,
                        xConstraint: Constraint.Constant(0),
                        yConstraint: Constraint.Constant(120),
@@ -1485,7 +1434,7 @@ namespace EGuardian.Views.Eventos.Evento
                     diagnostico.Unfocus();
                     return;
                 }
-                if (this.evento.calendarID != 0)
+                if (this.evento.idEvento != 0)
                 {
 
                     bool accion = await DisplayAlert("", "¿Desea cancelar la edición sin guardar los cambios?", "Cerrar", "Cancelar");
@@ -1665,10 +1614,10 @@ namespace EGuardian.Views.Eventos.Evento
         private async void Aceptar_Clicked(object sender, EventArgs e)
         {
             //if (!idPaciente.IsEnabled && !asunto.IsEnabled && !lugar.IsEnabled && !fecha.IsEnabled && !horaInicio.IsEnabled && !horaFin.IsEnabled && !diagnostico.IsEnabled && !estado.IsEnabled)
-            {
+            /*{
                 await Navigation.PopAsync();
                 return;
-            }
+            }*/
 
             /*else {
                  if (String.IsNullOrEmpty(asunto.Text) || asunto.Text.Length < 4)
@@ -1701,63 +1650,71 @@ namespace EGuardian.Views.Eventos.Evento
                      diagnostico.Focus();
                      return;
                  }*/
-            /*await Navigation.PushPopupAsync(new Indicador("Guardando cita", Color.White));
-            fechaInicio = new DateTimeControl(fecha, horaInicio);
-            fechaFin = new DateTimeControl(fecha, horaFin);
-            Save peticion = new Save
+            await Navigation.PushPopupAsync(new Indicador("Guardando evento", Color.White));
+
+            RegistrarEvento peticion = new RegistrarEvento
             {
-                patientID = paciente.Patient_ID.ToString(),
-                calendarID = this.cita.calendarID.ToString(),
-                location = lugar.Text,
-                subject = asunto.Text,
-                startTime = fechaInicio.Value.ToString(@"yyyy-MM-dd HH:mm"),
-                endTime = fechaFin.Value.ToString(@"yyyy-MM-dd HH:mm"),
-                description = diagnostico.Text,
-                label = estado.Items[estado.SelectedIndex].Substring(0, (estado.Items[estado.SelectedIndex].IndexOf('-')))
+                idEmpresa = Convert.ToInt32(Settings.session_idEmpresa),
+                nombre=Constants.DatosEvento.nombre,
+                idcapacitador= Constants.DatosEvento.idcapacitador,
+                fechaInicio= Constants.DatosEvento.fechaInicio,
+                fechaFin= Constants.DatosEvento.fechaFin
             };
-            if (peticion.description.Equals("INGRESE ALGUNAS OBSERVACIONES")) { peticion.description = "."; }
+
+            foreach(var app in Constants.AplicacionesEvento)
+            {
+                peticion.aplicaciones.Add(app.idAplicacion);
+            }
+
+            foreach (var action in Constants.AccionesEvento)
+            {
+                peticion.acciones.Add(action.idAccion);
+            }
+
+            foreach (var asistente in Constants.AsistentesEvento)
+            {
+                peticion.usuarios.Add(asistente.idEmpleado);
+            }
+
             try
             {
-                NuevaCita = await App.ManejadorDatos.SaveAsync(peticion);
+                var Respuesta = await App.ManejadorDatos.RegistrarEventoAsync(peticion);
                 await Navigation.PopAllPopupAsync();
-                foreach (var cita in NuevaCita)
+                if(Respuesta)
                 {
-                    if (cita.Result_Cd.Equals("0") || cita.Result_Cd.Equals("OK"))
-                    {
-                        MessagingCenter.Send<CitaNueva_EdicionVista>(this, "Aceptar");
-                        await Navigation.PopAsync();
-                        return;
-                    }
-                    else if (cita.Result_Cd.Equals("547"))
-                    {
-                        await DisplayAlert("¡Verifique!", "Ha ocurrido algo inesperado grabando la cita, intentalo de nuevo.", "Aceptar");
-                        return;
-                    }
-                    else
-                    {
-                        await DisplayAlert("¡Verifique!", cita.Result_Msg, "Aceptar");
-                    }
+                    MessagingCenter.Send<EventoPage>(this, "Aceptar");
+                    await Navigation.PopAsync();
+                    return;
                 }
-                if (NuevaCita.Count == 0)
+                else
                 {
-                    await DisplayAlert("¡Lo lamentamos!", "Ha ocurrido algo inesperado grabando la cita, intentalo de nuevo.", "Aceptar");
+                    ShowToast(ToastNotificationType.Error, "¡Lo lamentamos!", "Ha ocurrido algo inesperado grabando el evento, intentalo de nuevo.", 7);
                     return;
                 }
             }
             catch
             {
                 await Navigation.PopAllPopupAsync();
-                await DisplayAlert("¡Ha ocurrido algo inesperado!", "Intentalo de nuevo", "Aceptar");
-            }
-        }*/
+                ShowToast(ToastNotificationType.Error,"¡Ha ocurrido algo inesperado!", "Intentalo de nuevo",7);
+            }        
+        }
+
+        private async void ShowToast(ToastNotificationType type, string titulo, string descripcion, int tiempo)
+        {
+            var notificator = DependencyService.Get<IToastNotificator>();
+            bool tapped = await notificator.Notify(type, titulo, descripcion, TimeSpan.FromSeconds(tiempo));
         }
 
         protected async override void OnAppearing()
         {
-            //pacientes = App.Database.GetPacientes().ToList();
-            NavigationPage.SetBackButtonTitle(this, String.Empty);
-            NavigationPage.SetHasBackButton(this, false);
-
+            if(!isAppearing)
+            {
+                NavigationPage.SetBackButtonTitle(this, String.Empty);
+                NavigationPage.SetHasBackButton(this, false);
+                CarouselContenido.Position = 1;
+                CarouselContenido.Position = 0;
+                isAppearing = true;
+            }
         }
         protected override void OnDisappearing()
         {

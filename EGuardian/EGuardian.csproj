@@ -20,6 +20,8 @@
     <PackageReference Include="SuaveControls.FloatingActionButton" Version="2018.1.5" />
     <PackageReference Include="Refractored.XamForms.PullToRefresh" Version="2.2.2" />
     <PackageReference Include="Xam.Plugins.Forms.ImageCircle" Version="3.0.0.5" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Xam.Plugins.Messaging" Version="5.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,8 +36,23 @@
     <Folder Include="ViewModels\Perfil\" />
     <Folder Include="ViewModels\Incidencias\" />
     <Folder Include="Models\Incidencias\" />
+    <Folder Include="Models\Usuarios\" />
+    <Folder Include="Models\Puestos\" />
+    <Folder Include="Models\SectorNegocio\" />
+    <Folder Include="Models\Registro\" />
+    <Folder Include="Models\Contrasenia\" />
+    <Folder Include="Views\Perfil\Empleado\" />
+    <Folder Include="ViewModels\Perfil\Empleado\" />
+    <Folder Include="ViewModels\Eventos\Empleados\" />
+    <Folder Include="Models\Empresas\" />
+    <Folder Include="Models\Aplicaciones\" />
+    <Folder Include="Models\Acciones\" />
+    <Folder Include="Views\Eventos\Acciones\" />
+    <Folder Include="Views\Eventos\Aplicaciones\" />
+    <Folder Include="Models\Empleados\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Views\Inicio\InicioPage.cs" />
+    <Compile Remove="ViewModels\Ajustes\Acciones\AjustesAccionesDTViewModel.cs" />
   </ItemGroup>
 </Project>

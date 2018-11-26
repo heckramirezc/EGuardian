@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Linq;
 using EGuardian.Controls;
+using EGuardian.Helpers;
 using EGuardian.Models.Eventos;
+using EGuardian.ViewModels.Eventos.Empleados;
 using EGuardian.ViewModels.Eventos.Evento;
 using Xamarin.Forms;
 
@@ -18,23 +21,25 @@ namespace EGuardian.Views.Eventos.Asistentes
         RelativeLayout Contenido;
         Image iBusquedaIndicador;
         Grid Modal;
-        //ToolbarItem ABCToolBar;
+        bool capacitador;
         ExtendedEntry BusquedaRapida;
         public ListView Pacientes;
         StackLayout HeaderPacientes;
-        //StackLayout ABC;
-        //Grid Modal;
+
         Label ModalInstruccion, ModalMensaje;
 
         void Pacientes_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            MessagingCenter.Send<AsistentesFiltradoPage>(this, "OK");
+            if(capacitador)
+                MessagingCenter.Send<AsistentesFiltradoPage>(this, "OK");
+            else
+                MessagingCenter.Send<AsistentesFiltradoPage>(this, "OK_A");
             Navigation.PopModalAsync();
         }
-        public AsistentesFiltradoPage()
+        public AsistentesFiltradoPage(bool capacitador)
         {
             Title = "Filtrado";
-
+            this.capacitador = capacitador;
 
             indicadorFooterPacientes = new ActivityIndicator
             {
@@ -48,7 +53,7 @@ namespace EGuardian.Views.Eventos.Asistentes
                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.CenterAndExpand,
-                Text = "Cargando pacientes..."
+                Text = "Cargando empleados..."
             };
             Grid PacientesFooter = new Grid
             {
@@ -116,7 +121,6 @@ namespace EGuardian.Views.Eventos.Asistentes
             cancelar.GestureRecognizers.Add(cancelarTAP);
             Image buscar = new Image
             {
-                //Foreground = Color.FromHex("F7B819"),
                 Source = "iBusqueda.png",
                 HeightRequest = 25,
                 WidthRequest = 25,
@@ -171,7 +175,7 @@ namespace EGuardian.Views.Eventos.Asistentes
             PacientesHeader.Children.Add(
                 new RoundedBoxView.Forms.Plugin.Abstractions.RoundedBoxView
                 {
-                    BackgroundColor = Color.FromHex("B2B2B2"),
+                    BackgroundColor = Color.FromHex("E5E5E5"),
                     CornerRadius = 6,
                     HeightRequest = 20,
                     //WidthRequest = 128,
@@ -260,16 +264,14 @@ namespace EGuardian.Views.Eventos.Asistentes
                 BusquedaRapida.Focus();
             };
 
-            eventos evento = new eventos();
-
             ModalContenido.GestureRecognizers.Add(GestoModal);
             Pacientes = new ListView
             {
                 BackgroundColor = Color.Transparent,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 //IsScrollEnable = false,
-                ItemsSource = evento.Asistentes,
-                ItemTemplate = new DataTemplate(typeof(EventoAsistentesDTViewModel)),
+                ItemsSource = App.Database.GetEmpleados(Convert.ToInt32(Settings.session_idUsuario)).ToList(),
+                ItemTemplate = new DataTemplate(typeof(EventoEmpleadosDTViewModel)),
                 Margin = 0,
                 RowHeight = 55, //Convert.ToInt32((App.DisplayScreenHeight / 13.533333333333333)),
                 IsPullToRefreshEnabled = false,

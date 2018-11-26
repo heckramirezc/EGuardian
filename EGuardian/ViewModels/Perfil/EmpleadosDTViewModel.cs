@@ -1,11 +1,14 @@
 ﻿using System;
-using EGuardian.Common;
+using System.Collections.Generic;
+using System.Linq;
 using EGuardian.Controls;
-using EGuardian.Data;
+using EGuardian.Helpers;
+using EGuardian.Models.Empleados;
 using EGuardian.Models.Eventos;
-using EGuardian.ViewModels.Eventos.Evento;
-using Plugin.Toasts;
-using Rg.Plugins.Popup.Extensions;
+using EGuardian.ViewModels.Perfil.Empleado;
+using EGuardian.Views.Menu;
+using EGuardian.Views.Perfil;
+using EGuardian.Views.Perfil.Empleado;
 using SuaveControls.Views;
 using Xamarin.Forms;
 
@@ -30,49 +33,25 @@ namespace EGuardian.ViewModels.Perfil
         //StackLayout ABC;
         //Grid Modal;
         Label ModalInstruccion, ModalMensaje;
+        List<empleados> Empleados = App.Database.GetEmpleados(Convert.ToInt32(Settings.session_idUsuario)).ToList();
 
         void Pacientes_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            MessagingCenter.Send<EmpleadosDTViewModel>(this, "OK");
-            Navigation.PopModalAsync();
+            Navigation.PushAsync(new EmpleadoPage((empleados)e.SelectedItem));
         }
 
         public EmpleadosDTViewModel()
-        {        
-            indicadorFooterPacientes = new ActivityIndicator
-            {
-                IsRunning = true,
-                Color = Color.Accent,
-                HorizontalOptions = LayoutOptions.End,
-                WidthRequest = 20
-            };
-            tituloFooterPacientes = new Label
-            {
-                FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
-                HorizontalOptions = LayoutOptions.Start,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                Text = "Cargando pacientes..."
-            };
-            Grid PacientesFooter = new Grid
-            {
-                HeightRequest = 60,
-                Padding = new Thickness(5, 0, 5, 0),
-                RowSpacing = 1,
-                ColumnSpacing = 1,
-                BackgroundColor = Color.Transparent,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                RowDefinitions = {
-                    new RowDefinition { Height = new GridLength (1, GridUnitType.Auto) }
-                },
-                ColumnDefinitions = {
-                    new ColumnDefinition { Width = new GridLength (1, GridUnitType.Auto) },
-                    new ColumnDefinition { Width = new GridLength (1, GridUnitType.Star) },
-                }
-            };
+        {
 
-            PacientesFooter.Children.Add(indicadorFooterPacientes, 0, 0);
-            PacientesFooter.Children.Add(tituloFooterPacientes, 1, 0);
+            MessagingCenter.Subscribe<EmpleadoPage>(this, "DisplayAlert", (sender) =>
+            {
+                System.Diagnostics.Debug.WriteLine("Método para obtener empleados");
+            });
+
+            MessagingCenter.Subscribe<MainPage>(this, "CargaEmpleados", (sender) =>
+            {
+                ActualizarPacientes();
+            });
 
             BusquedaRapida =
                 new ExtendedEntry
@@ -174,7 +153,7 @@ namespace EGuardian.ViewModels.Perfil
             PacientesHeader.Children.Add(
                 new RoundedBoxView.Forms.Plugin.Abstractions.RoundedBoxView
                 {
-                    BackgroundColor = Color.FromHex("B2B2B2"),
+                    BackgroundColor = Color.FromHex("E5E5E5"),
                     CornerRadius = 6,
                     HeightRequest = 20,
                     //WidthRequest = 128,
@@ -189,90 +168,13 @@ namespace EGuardian.ViewModels.Perfil
                 Children = { PacientesHeader }
             };
 
-
-
-            Modal = new Grid();
-            Modal.Children.Add(new Grid
-            {
-                BackgroundColor = Color.Black,
-                Opacity = 0.65,
-                Padding = new Thickness(0, 0, 0, 0),
-                WidthRequest = 200,
-                HeightRequest = 200,
-            });
-
-            ModalMensaje = new Label
-            {
-                TextColor = Color.White,
-                FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
-                FontSize = 18,
-                HorizontalTextAlignment = TextAlignment.Center,
-                VerticalTextAlignment = TextAlignment.Center,
-            };
-            ModalInstruccion = new Label
-            {
-                TextColor = Color.White,
-                FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
-                FontSize = 18,
-                HorizontalTextAlignment = TextAlignment.Center,
-                VerticalTextAlignment = TextAlignment.Center,
-            };
-            iBusquedaIndicador = new Image
-            {
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.End,
-                WidthRequest = 25,
-                HeightRequest = 25,
-                Source = "iBusquedaIndicador.png"
-            };
-            StackLayout ModalContenido = new StackLayout
-            {
-                Padding = 15,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                Children =
-                {
-                    iBusquedaIndicador,
-                    new StackLayout
-                    {
-                        HorizontalOptions = LayoutOptions.CenterAndExpand,
-                        VerticalOptions = LayoutOptions.CenterAndExpand,
-                        Spacing = 15,
-                        Padding = 30,
-                        Children =
-                        {
-                            ModalMensaje,
-                            ModalInstruccion
-                        }
-
-                    }
-                }
-            };
-
-            Modal.Children.Add(ModalContenido);
-
-
-
-
-
-            var GestoModal = new TapGestureRecognizer();
-            GestoModal.Tapped += (s, e) =>
-            {
-                ActualizarPacientes();
-                OcultarModal();
-                BusquedaRapida.Focus();
-            };
-
-            eventos evento = new eventos();
-
-            ModalContenido.GestureRecognizers.Add(GestoModal);
             Pacientes = new ListView
             {
                 BackgroundColor = Color.Transparent,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 //IsScrollEnable = false,
-                ItemsSource = evento.Asistentes,
-                ItemTemplate = new DataTemplate(typeof(EventoAsistentesDTViewModel)),
+                ItemsSource = Empleados,
+                ItemTemplate = new DataTemplate(typeof(EmpleadoDTViewModel)),
                 Margin = 0,
                 RowHeight = 55, //Convert.ToInt32((App.DisplayScreenHeight / 13.533333333333333)),
                 IsPullToRefreshEnabled = false,
@@ -282,8 +184,7 @@ namespace EGuardian.ViewModels.Perfil
                 VerticalOptions = LayoutOptions.FillAndExpand,
             };
 
-            //Pacientes.IsPullToRefreshEnabled
-            Pacientes.Refreshing += Pacientes_Refreshing;
+            //Pacientes.sour
             Pacientes.ItemSelected += Pacientes_ItemSelected;
             Pacientes.Focused += (sender, e) =>
             {
@@ -302,7 +203,7 @@ namespace EGuardian.ViewModels.Perfil
                     TextColor = Color.FromHex("F7B819"),
                     //BackgroundColor = Color.FromHex("F7B819")
                 };
-                //menuFAB.Clicked += MenuFAB_Clicked;
+                addFAB.Clicked += AddFAB_Clicked;;
             }
             catch (Exception ex)
             {
@@ -318,25 +219,43 @@ namespace EGuardian.ViewModels.Perfil
             Content = Contenido;
             PacientesVistaVisible = false;
             PacientesVistaPresentado = true;
-            mostrar_ABC();
+            Contenido.Children.Add(new StackLayout
+            {
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                Spacing = 0,
+                Children =
+                            {
+                                new Grid
+                                {
+                                    BackgroundColor = Color.FromHex("E5E5E5"),
+                                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                                    VerticalOptions = LayoutOptions.FillAndExpand,
+                                    Padding = new Thickness(20, 0),
+                            Children = { Pacientes }
+                                },
+                                new BoxView {BackgroundColor = Color.FromHex("B3B3B3"), HeightRequest=4}
+                            }
+            },
+                xConstraint: Constraint.Constant(0),
+                // yConstraint: Constraint.Constant(0),
+                yConstraint: Constraint.RelativeToView(HeaderPacientes, (parent, view) => { return view.Height; }),
+                widthConstraint: Constraint.RelativeToParent(parent => parent.Width),
+                                   heightConstraint: Constraint.RelativeToView(HeaderPacientes, (parent, view) => { return (parent.Height - view.Height); })
+            );
             Contenido.Children.Add(addFAB,
                xConstraint: Constraint.RelativeToParent((parent) => { return (parent.Width - 66); }),
                yConstraint: Constraint.RelativeToParent((parent) => { return (parent.Height - 66); })
             );
         }
 
-        private void Pacientes_Refreshing(object sender, EventArgs e)
+
+        void AddFAB_Clicked(object sender, EventArgs e)
         {
-            var lista = (ListView)sender;
-            ActualizarPacientes();
-            mostrar_ABC();
-            lista.IsRefreshing = false;
+            Navigation.PushAsync(new EmpleadoPage(new empleados()));
         }
 
-        private async void OcultarModal()
-        {
-            Contenido.Children.Remove(Modal);
-        }
+
         void BusquedaRapida_TextChanged(object sender, TextChangedEventArgs e)
         {
             /*OcultarModal();
@@ -370,73 +289,12 @@ namespace EGuardian.ViewModels.Perfil
             }*/
         }
 
-
-
         private void ActualizarPacientes()
         {
-            /*
-            BusquedaRapida.Text = String.Empty;
-            indicadorFooterPacientes.IsRunning = true;
-            tituloFooterPacientes.Text = "Cargando pacientes...";
-            VistaModelo.IsInitialized = true;
-            var PacientesActualizados = new ObservableCollection<pacientes>(App.Database.GetPacientesOrderByNombre());
-            try
-            {
-                Pacientes.ItemsSource = new ObservableCollection<PacientesAgrupacion<string, pacientes>>(from paciente in PacientesActualizados
-                                                                                                         orderby paciente.First_Nm
-                                                                                                         group paciente by paciente.inicialNombre into pacientesAgrupados
-                                                                                                         select new PacientesAgrupacion<string, pacientes>(pacientesAgrupados.Key, pacientesAgrupados));
-            }
-            finally
-            {
-                indicadorFooterPacientes.IsRunning = false;
-                if (PacientesActualizados.Count != 0)
-                    tituloFooterPacientes.Text = PacientesActualizados.Count + " Paciente(s) encontrados";
-                else
-                    tituloFooterPacientes.Text = "No se han encontrado pacientes";
-            }*/
+            Empleados.Clear();
+            Empleados = App.Database.GetEmpleados(Convert.ToInt32(Settings.session_idUsuario)).ToList();
+            Pacientes.ItemsSource = null;
+            Pacientes.ItemsSource = Empleados;
         }
-
-        private void mostrar_ABC()
-        {
-
-            Contenido.Children.Add(new StackLayout
-            {
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                Spacing = 0,
-                Children =
-                            {
-                                new Grid
-                                {
-                                    BackgroundColor = Color.FromHex("E5E5E5"),
-                                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                                    VerticalOptions = LayoutOptions.FillAndExpand,
-                                    Padding = new Thickness(20, 0),
-                            Children = { Pacientes }
-                                },
-                                new BoxView {BackgroundColor = Color.FromHex("B3B3B3"), HeightRequest=4}
-                            }
-            },
-                xConstraint: Constraint.Constant(0),
-                // yConstraint: Constraint.Constant(0),
-                yConstraint: Constraint.RelativeToView(HeaderPacientes, (parent, view) => { return view.Height; }),
-                widthConstraint: Constraint.RelativeToParent(parent => parent.Width),
-                                   heightConstraint: Constraint.RelativeToView(HeaderPacientes, (parent, view) => { return (parent.Height - view.Height); })
-            );
-        }
-
-        /*protected async override void OnAppearing()
-        {
-            base.OnAppearing();
-            if (PacientesVistaPresentado)
-            {
-                mostrar_ABC();
-                ActualizarPacientes();
-                PacientesVistaPresentado = false;
-            }
-            BusquedaRapida.Focus();
-
-        }*/
     }
 }

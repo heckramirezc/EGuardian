@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CarouselView.FormsPlugin.Abstractions;
+using EGuardian.Helpers;
+using EGuardian.Models.Empleados;
 using EGuardian.ViewModels.Perfil;
 using Rg.Plugins.Popup.Extensions;
 using Xamarin.Forms;
@@ -20,9 +22,11 @@ namespace EGuardian.Views.Perfil
 
         public PerfilPage()
         {
+            Title = "Perfil & Colaboradores";
+            NavigationPage.SetBackButtonTitle(this, "");
             headerBackground = new Image()
             {
-                Source = "headerRegistro.png",
+                Source = "headerPerfil.png",
                 Aspect = Aspect.AspectFill
             };
 
@@ -230,28 +234,9 @@ namespace EGuardian.Views.Perfil
         }
 
 
-        protected override void OnAppearing()
+        protected async override void OnAppearing()
         {
-            Navigation.PopAllPopupAsync();
-            /*MessagingCenter.Unsubscribe<ContraseniaModeloVista>(this, "DisplayAlert");
-            MessagingCenter.Unsubscribe<CuentaModeloVista>(this, "DisplayAlert");
-            MessagingCenter.Unsubscribe<UsuarioModeloVista>(this, "DisplayAlert");
-
-            MessagingCenter.Subscribe<ContraseniaModeloVista, string[]>(this, "DisplayAlert", async (sender, values) =>
-            {
-                await DisplayAlert(values[0], values[1], "Aceptar");
-                MessagingCenter.Send<CuentaAjustesView>(this, "DisplayAlert");
-            });
-            MessagingCenter.Subscribe<CuentaModeloVista, string[]>(this, "DisplayAlert", async (sender, values) =>
-            {
-                await DisplayAlert(values[0], values[1], "Aceptar");
-                MessagingCenter.Send<CuentaAjustesView>(this, "DisplayAlert");
-            });
-            MessagingCenter.Subscribe<UsuarioModeloVista, string[]>(this, "DisplayAlert", async (sender, values) =>
-            {
-                await DisplayAlert(values[0], values[1], "Aceptar");
-                MessagingCenter.Send<CuentaAjustesView>(this, "DisplayAlert");
-            });*/
+            await Navigation.PopAllPopupAsync();
         }
     }
 }

@@ -1,10 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using EGuardian.Common;
 using EGuardian.Common.Resources;
 using EGuardian.Controls;
 using EGuardian.Data;
+using EGuardian.Helpers;
+using EGuardian.Models.Empresas;
+using EGuardian.Models.Puestos;
+using EGuardian.Models.SectorNegocio;
+using EGuardian.Models.Usuarios;
+using EGuardian.Views.Menu;
+using EGuardian.Views.Perfil;
 using Plugin.Toasts;
 using Rg.Plugins.Popup.Extensions;
 using Xamarin.Forms;
@@ -19,64 +28,19 @@ namespace EGuardian.ViewModels.Perfil
         public bool Logeado;
         int control;
         Button guardar;
-        System.Globalization.CultureInfo globalizacion;
         StackLayout EdicionCreacion;
         ScrollView contenidoCreacionEdicion;
-        //cuentas cuenta = App.Database.GetCuenta(Convert.ToInt32(Settings.session_idUsuario));
-
+        usuarios cuenta = App.Database.GetUserById(Convert.ToInt32(Settings.session_idUsuario));
+        empresas cuenta1 = App.Database.GetEmpresa(Convert.ToInt32(Settings.session_idEmpresa));
+        List<puestos> puestos;
+        List<sectores> sectores;
         public CuentaDTViewModel()
         {
-            globalizacion = new System.Globalization.CultureInfo("es-GT");
-
-            /*MessagingCenter.Subscribe<CuentaAjustesView>(this, "DisplayAlert", (sender) =>
+            MessagingCenter.Subscribe<MainPage>(this, "DisplayAlert", (sender) =>
             {
                 Focus();
                 control = -1;
             });
-
-            MessagingCenter.Subscribe<App>(this, "CargaInicial", (sender) =>
-            {
-                if (Constantes.CargaInicial)
-                {
-                    try
-                    {
-                        int index = 0;
-                        foreach (var country in App.Database.GetPaises().ToList())
-                        {
-                            paises.Add(country.nombre, country.codigo);
-                            pais.Items.Add(country.nombre);
-                            paisSeleccionado.Add(country.codigo, index);
-                            index++;
-                        }
-                        index = 0;
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine(ex.Message);
-                    }
-
-                    try
-                    {
-                        int index = 0;
-                        foreach (var speciality in App.Database.GetEspecialidades().ToList())
-                        {
-                            especialidades.Add(speciality.nombre.ToUpper(), speciality.idEspecialidad);
-                            especialidad1.Items.Add(speciality.nombre.ToUpper());
-                            especialidad2.Items.Add(speciality.nombre.ToUpper());
-                            especialidad1Seleccionado.Add(speciality.idEspecialidad, index);
-                            especialidad2Seleccionado.Add(speciality.idEspecialidad, index);
-                            index++;
-                        }
-                        index = 0;
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine(ex.Message);
-                    }
-                    Navigation.PopAllPopupAsync();
-                }
-                CargarSeleccionables();
-            });*/
 
 
             nombres = new ExtendedEntry
@@ -88,7 +52,7 @@ namespace EGuardian.ViewModels.Perfil
                 XAlign = TextAlignment.End,
                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
                 FontSize = 14,
-                //Text = cuenta.First_Nm1
+                Text = String.IsNullOrEmpty(cuenta.firstName) ?String.Empty: cuenta.firstName
             };
 
 
@@ -102,7 +66,7 @@ namespace EGuardian.ViewModels.Perfil
                 XAlign = TextAlignment.End,
                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
                 FontSize = 14,
-                //Text = cuenta.Last_Nm1
+                Text = String.IsNullOrEmpty(cuenta.lastName) ? String.Empty : cuenta.lastName
             };
 
             nombreEmpresa = new ExtendedEntry
@@ -114,7 +78,7 @@ namespace EGuardian.ViewModels.Perfil
                 XAlign = TextAlignment.End,
                 FontSize = 14,
                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
-                //Text = cuenta.Account_Nm
+                Text = String.IsNullOrEmpty(cuenta1.nombre) ? String.Empty : cuenta1.nombre
             };
 
 
@@ -128,7 +92,7 @@ namespace EGuardian.ViewModels.Perfil
                 XAlign = TextAlignment.End,
                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
                 FontSize = 14,
-                //Text = cuenta.Adr1_Txt
+                Text = String.IsNullOrEmpty(cuenta1.direccion) ? String.Empty : cuenta1.direccion
             };
 
             correo = new ExtendedEntry
@@ -142,7 +106,7 @@ namespace EGuardian.ViewModels.Perfil
                 XAlign = TextAlignment.End,
                 FontFamily = Device.OnPlatform("OpenSans-Bold", "OpenSans-Bold", null),
                 FontSize = 14,
-                //Text = cuenta.EMail_1
+                Text = String.IsNullOrEmpty(cuenta.email) ? String.Empty : cuenta.email
             };
 
             colaboradores = new ExtendedPicker
@@ -173,7 +137,7 @@ namespace EGuardian.ViewModels.Perfil
             Grid Colaboradores = new Grid();
             Colaboradores.Children.Add(colaboradores);
             Colaboradores.Children.Add(colaboradoresDropdown);
-            colaboradores.SelectedIndex = -1;
+            colaboradores.SelectedIndex = 2;
 
             sector = new ExtendedPicker
             {
@@ -185,10 +149,6 @@ namespace EGuardian.ViewModels.Perfil
                 Font = Device.OnPlatform<Font>(Font.OfSize("OpenSans-Bold", 14), Font.OfSize("OpenSans-Bold", 14), Font.Default)
             };
 
-            foreach (string sectoresT in Constants.sectores.Keys)
-            {
-                sector.Items.Add(sectoresT);
-            }
 
             IconView sectorDropdown = new IconView
             {
@@ -203,7 +163,7 @@ namespace EGuardian.ViewModels.Perfil
             Grid Sector = new Grid();
             Sector.Children.Add(sector);
             Sector.Children.Add(sectorDropdown);
-            sector.SelectedIndex = -1;
+            sector.SelectedIndex = 5;
 
 
             genero = new ExtendedPicker
@@ -247,9 +207,45 @@ namespace EGuardian.ViewModels.Perfil
                 Font = Device.OnPlatform<Font>(Font.OfSize("OpenSans-Bold", 14), Font.OfSize("OpenSans-Bold", 14), Font.Default)
             };
 
-            foreach (string puestosT in Constants.puestos.Keys)
+
+
+            puestos = App.Database.GetPuestos().ToList();
+            if (puestos.Count != 0)
             {
-                puesto.Items.Add(puestosT);
+                puesto.Items.Clear();
+                foreach (var puestoT in puestos)
+                {
+                    puesto.Items.Add(puestoT.nombre);
+                }
+            }
+            try
+            {
+                puesto.SelectedIndex = cuenta.idPuesto;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+
+
+            sectores = App.Database.GetSectores().ToList();
+            if (sectores.Count != 0)
+            {
+                sector.Items.Clear();
+                foreach (var sectorT in sectores)
+                {
+                    sector.Items.Add(sectorT.nombre);
+                }
+            }
+
+
+            try
+            {
+                sector.SelectedIndex = cuenta.idPuesto;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
             }
 
             IconView puestoDropdown = new IconView
@@ -265,7 +261,6 @@ namespace EGuardian.ViewModels.Perfil
             Grid Puesto = new Grid();
             Puesto.Children.Add(puesto);
             Puesto.Children.Add(puestoDropdown);
-            puesto.SelectedIndex = -1;
 
             Grid generoPuesto = new Grid
             {
@@ -778,100 +773,27 @@ namespace EGuardian.ViewModels.Perfil
             if (String.IsNullOrEmpty(nombres.Text))
             {
                 DisplayAlert("", "Por favor, indique un nombre");
-                control = 4;
+                control = 2;
                 return;
             }
             if (String.IsNullOrEmpty(apellidos.Text))
             {
                 DisplayAlert("", "Por favor, indique un apellido");
-                control = 5;
+                control = 3;
                 return;
             }
-
-
-
-            /*await Navigation.PushPopupAsync(new Indicador("Actualizando cuenta", Color.White));
+            await Navigation.PushPopupAsync(new Indicador("Actualizando datos de empresa", Color.White));
             try
             {
-                AccountSave peticion = new AccountSave
-                {
-                    Account_Nm = nombreClinica.Text,
-                    Adr1_Txt = direccion1.Text,
-                    Adr2_Txt = direccion2.Text,
-                    //Adr_Place_ID = lugares[lugar.Items[lugar.SelectedIndex]],
-                    Ctry_Cd = paises[pais.Items[pais.SelectedIndex]],
-                    Phone_1 = telefono1.Text,
-                    Phone_2 = telefono2.Text,
-                    //Prefix_Nm = prefijo.Items[prefijo.SelectedIndex],
-                    First_Nm1 = primerNombre.Text,
-                    First_Nm2 = segundoNombre.Text,
-                    Last_Nm1 = primerApellido.Text,
-                    Last_Nm2 = segundoApellido.Text,
-                    Legal_Cd = colegiado.Text,
-
-                    //Specialty_1 = especialidades[especialidad.Items[especialidad.SelectedIndex]],
-
-                };
-
-                if (lugar.Equals("Información no disponible") || lugar.SelectedIndex == -1)
-                    peticion.Adr_Place_ID = ".";
-                else
-                    peticion.Adr_Place_ID = lugares[lugar.Items[lugar.SelectedIndex]];
-                if (prefijo.SelectedIndex == -1)
-                    peticion.Prefix_Nm = ".";
-                else
-                    peticion.Prefix_Nm = prefijo.Items[prefijo.SelectedIndex];
-                if (String.IsNullOrEmpty(segundoNombre.Text))
-                    peticion.First_Nm2 = ".";
-                if (String.IsNullOrEmpty(segundoApellido.Text))
-                    peticion.Last_Nm2 = ".";
-                if (String.IsNullOrEmpty(telefono2.Text))
-                    peticion.Phone_2 = ".";
-                if (String.IsNullOrEmpty(colegiado.Text))
-                    peticion.Legal_Cd = ".";
-                if (especialidad1.SelectedIndex == -1)
-                    peticion.Specialty_1 = ".";
-                else
-                    peticion.Specialty_1 = especialidades[especialidad1.Items[especialidad1.SelectedIndex]];
-                if (especialidad2.SelectedIndex == -1)
-                    peticion.Specialty_2 = ".";
-                else
-                    peticion.Specialty_2 = especialidades[especialidad2.Items[especialidad2.SelectedIndex]];
-                if (notificacionesCorreo.SelectedIndex == -1 || string.IsNullOrEmpty(correo.Text))
-                    peticion.Calendar_Send_EMai_YN = ".";
-                else
-                    peticion.Calendar_Send_EMai_YN = Constantes.notificacionesCorreoCuenta[notificacionesCorreo.Items[notificacionesCorreo.SelectedIndex]];
-
-                var Usuario = await App.ManejadorDatos.AccountSaveAsync(peticion);
+                await Task.Delay(3000);
                 await Navigation.PopAllPopupAsync();
-                foreach (var user in Usuario)
-                {
-                    if (user.Result_Cd.Equals("0") || user.Result_Cd.Equals("OK"))
-                    {
-                        ShowToast(ToastNotificationType.Success, "Clínica", "Datos de clínica actualizados.", 7);
-                        return;
-                    }
-                    else if (user.Result_Cd.Equals("547"))
-                    {
-                        DisplayAlert("¡Verifique!", "Ha ocurrido algo inesperado en la actualización de datos, intentalo de nuevo.");
-                        return;
-                    }
-                    else
-                    {
-                        DisplayAlert("", user.Result_Msg);
-                    }
-                }
-                if (Usuario.Count == 0)
-                {
-                    ShowToast(ToastNotificationType.Error, "Clínica", "Ha ocurrido algo inesperado en la actualización de datos, intentalo de nuevo.", 5);
-                    return;
-                }
             }
-            catch
+            catch (Exception ex)
             {
-                await Navigation.PopAllPopupAsync();
-                DisplayAlert("¡Ha ocurrido algo inesperado!", "Intentalo de nuevo");
-            }*/
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+
+            ShowToast(ToastNotificationType.Success, "Empresa", "Datos de empresa actualizados exitosamente.", 7);
 
         }
         public void DisplayAlert(string title, string message)

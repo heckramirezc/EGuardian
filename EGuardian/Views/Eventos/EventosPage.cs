@@ -8,6 +8,7 @@ using CarouselView.FormsPlugin.Abstractions;
 using EGuardian.Common;
 using EGuardian.Common.Resources;
 using EGuardian.Data;
+using EGuardian.Helpers;
 using EGuardian.Models.Eventos;
 using EGuardian.ViewModels.Eventos;
 using EGuardian.Views.Eventos.Evento;
@@ -117,18 +118,14 @@ namespace EGuardian.Views.Eventos
 
             MessagingCenter.Subscribe<EventoPage>(this, "Aceptar", async (sender) =>
             {
-                /*foreach (var cita in sender.NuevaCita)
-                {
-                    if (sender.evento.calendarID == 0)
-                        ShowToast(ToastNotificationType.Success,
-                                  "¡Cita registrada con éxito!", "Registrada con el identificador " + evento.Calendar_ID,
-                                  10);
-                    else
+                ShowToast(ToastNotificationType.Success,"¡Evento registrado con éxito!", string.Empty, 5);
+                    /*if (sender.evento.calendarID == 0)*/
+                        
+                    /*else
                         ShowToast(ToastNotificationType.Success,
                                   "¡Cita actualizada con éxito!", "Evento actalizado para " + sender.evento.asunto,
-                                  10);
-                }
-                */
+                                  10);*/
+
                await ActualizarCitas();
 
             });
@@ -893,6 +890,10 @@ namespace EGuardian.Views.Eventos
 
         async void MenuFAB_Clicked(object sender, EventArgs e)
         {
+            Constants.AccionesEvento.Clear();
+            Constants.AplicacionesEvento.Clear();
+            Constants.AsistentesEvento.Clear();
+            Constants.DatosEvento = new RegistrarEvento();
             await Navigation.PushAsync(new EventoPage(DateTime.Now,new eventos()));
         }
 
@@ -919,12 +920,11 @@ namespace EGuardian.Views.Eventos
         private async Task ActualizarCitas()
         {
             await Navigation.PushPopupAsync(new Indicador("Actualizando eventos", Color.White));
-            /*SelectByDate peticion = new SelectByDate
+            GetEventos peticion = new GetEventos
             {
-                fromDate = fromDate.ToString(@"yyyy-MM-dd"),
-                toDate = toDate.ToString(@"yyyy-MM-dd")
+                idEmpresa = Convert.ToInt32(Settings.session_idEmpresa)
             };
-            await App.ManejadorDatos.SelectByDateAsync(peticion);*/
+            await App.ManejadorDatos.GetEventosAsync(peticion);
             AgendaVacia();
             Constants.PantallaAbierta = false;
         }
@@ -934,8 +934,9 @@ namespace EGuardian.Views.Eventos
         {
             actualizarsemana();
             horario.Children.Clear();
-            List<eventos> eventos = App.Database.GetEventos().ToList();
-            if (eventos.Count == 0)
+            List<eventos> eventos = App.Database.GetEventos(Convert.ToInt32(Settings.session_idUsuario)).ToList();
+            var ConteoEventos = eventos.Where(evento => evento.Fecha.Date.Equals(fromDate.Date)).Count();
+            if (ConteoEventos == 0)
             {
                 if (fromDate.Date == DateTime.Now.Date)
                 {
@@ -956,14 +957,14 @@ namespace EGuardian.Views.Eventos
             {
                 if (fromDate.Date == DateTime.Now.Date)
                 {
-                    ShowToast(ToastNotificationType.Info, "Eventos", "Tienes " + eventos.Count.ToString() + " eventos para hoy", 3);
+                    ShowToast(ToastNotificationType.Info, "Eventos", "Tienes " + ConteoEventos + " eventos para hoy", 3);
                     bthoy.Text = "HOY";
                     bthoy.TextColor = Color.FromHex("432161");
                     bthoy.BackgroundColor = Color.White;
                 }
                 else
                 {
-                    ShowToast(ToastNotificationType.Info, "Eventos", "Tienes " + eventos.Count.ToString() + " eventos para el " + fromDate.Day + " de " + globalizacion.DateTimeFormat.GetMonthName(fromDate.Month).ToLower(), 3);
+                    ShowToast(ToastNotificationType.Info, "Eventos", "Tienes " + ConteoEventos + " eventos para el " + fromDate.Day + " de " + globalizacion.DateTimeFormat.GetMonthName(fromDate.Month).ToLower(), 3);
                     bthoy.Text = "IR A HOY";
                     bthoy.TextColor = Color.White;
                     bthoy.BackgroundColor = Color.Transparent;
